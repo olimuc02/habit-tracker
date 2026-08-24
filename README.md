@@ -1,6 +1,8 @@
 # Habits
 
-A habit tracker for running (3x/week), reading (20 min a day), writing the book (60 min, 5x/week), and language learning (20 min a day).
+A habit tracker for running (3x/week), reading (20 min a day), writing the book (60 min, 5x/week, starting 1 September 2026), and language learning (20 min a day).
+
+There is nothing to measure — you check the task off and that's it. The daily targets are printed on the cards as reminders only.
 One page, no build step, syncs between your laptop and iPhone automatically.
 
 ## Views
@@ -10,7 +12,7 @@ One page, no build step, syncs between your laptop and iPhone automatically.
 - **Stats** — streaks, best streaks, 30-day consistency, days this month and all time, and a 12-week bar chart per habit.
 
 ## Editing habits
-The gear in the top right: rename, pick an emoji, set how many days a week you want it, pick a color, reorder, add or delete. The daily target ("20 min") is only a reminder printed on the card — nothing is measured. Also export/import a backup.
+The gear in the top right: rename, pick an emoji, set how many days a week you want it, pick a color, set a start date, reorder, add or delete. The daily target ("20 min") is only a reminder printed on the card — nothing is measured. Also export/import a backup.
 
 ## Sync
 Uses the existing `tasks-oj` Firebase project (Firestore).

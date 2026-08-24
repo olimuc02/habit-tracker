@@ -78,6 +78,11 @@ input,select,textarea{font-family:inherit;font-size:15px;color:inherit}
 .hcard{padding:15px 16px;margin-bottom:10px;transition:box-shadow .2s,transform .2s;display:flex;gap:14px;align-items:flex-start;position:relative;overflow:hidden}
 .hcard::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--c);opacity:0;transition:opacity .2s}
 .hcard.done::before{opacity:1}
+.hcard.pending{opacity:.66}
+.check.pend{border-style:dashed;background:#fff}
+.cell.pre{background:transparent;border:1px dashed var(--line);opacity:.6}
+.pip.na{opacity:.3}
+.soon{font-size:12px;font-weight:700;color:var(--faint);flex:none}
 .check{position:relative;width:48px;height:48px;border-radius:16px;flex:none;display:grid;place-items:center;border:2px solid color-mix(in srgb,var(--c) 20%,#fff);background:color-mix(in srgb,var(--c) 8%,#fff);transition:transform .16s cubic-bezier(.34,1.6,.64,1),background .16s,border-color .16s}
 .check.on{background:color-mix(in srgb,var(--c) 17%,#fff);border-color:var(--c)}
 .badge{position:absolute;right:-6px;bottom:-6px;width:21px;height:21px;border-radius:50%;background:var(--c);border:2.5px solid #fff;display:grid;place-items:center;color:#fff}
@@ -102,6 +107,7 @@ input,select,textarea{font-family:inherit;font-size:15px;color:inherit}
 .sbox{width:100%;height:26px;border-radius:8px;background:var(--line-soft);transition:background .15s,transform .12s}
 .sbox:active{transform:scale(.93)}
 .sbox.on{background:var(--c)}
+.sbox.pre{background:transparent;border:1px dashed var(--line);opacity:.6}
 .sbox.today{box-shadow:0 0 0 2px #fff,0 0 0 3.5px color-mix(in srgb,var(--c) 55%,transparent)}
 .sday small{font-size:9.5px;font-weight:700;color:var(--faint);letter-spacing:.03em}
 .note{margin-top:11px;width:100%;border:1px solid var(--line-soft);background:#FCFBF9;border-radius:10px;padding:8px 10px;font-size:13.5px;resize:none;outline:none;min-height:34px;transition:border-color .15s}
@@ -218,6 +224,8 @@ input,select,textarea{font-family:inherit;font-size:15px;color:inherit}
 .dayedit:last-child{border-bottom:0}
 .dayedit .nm{font-size:14.5px;font-weight:600;flex:1;min-width:0}
 .dstate{font-size:12.5px;font-weight:700;color:var(--faint);flex:none}
+.dayedit.pending{opacity:.55}
+.mini.pend{border-style:dashed;background:#fff}
 .dayedit .mini.on + .nm + .dstate{color:var(--c)}
 .mini{position:relative;width:38px;height:38px;border-radius:13px;border:2px solid color-mix(in srgb,var(--c) 20%,#fff);background:color-mix(in srgb,var(--c) 8%,#fff);display:grid;place-items:center;flex:none;transition:all .15s}
 .mini.on{background:color-mix(in srgb,var(--c) 17%,#fff);border-color:var(--c)}
@@ -277,7 +285,7 @@ const ICONS = {
 const DEFAULTS = [
   {id:'running',  name:'Running',           emoji:'\u{1F3C3}',       color:'c1', unit:'',    goal:null, weekly:3},
   {id:'reading',  name:'Reading',           emoji:'\u{1F4D6}',       color:'c2', unit:'min', goal:20,   weekly:7},
-  {id:'writing',  name:'Writing Book',      emoji:'\u{270D}\u{FE0F}', color:'c3', unit:'min', goal:60, weekly:5},
+  {id:'writing',  name:'Writing Book',      emoji:'\u{270D}\u{FE0F}', color:'c3', unit:'min', goal:60, weekly:5, start:'2026-09-01'},
   {id:'language', name:'Language Learning', emoji:'\u{1F5E3}\u{FE0F}', color:'c4', unit:'min', goal:20, weekly:7},
 ];
 const EMOJI_SET = ['\u{1F3C3}','\u{1F4D6}','\u{270D}\u{FE0F}','\u{1F5E3}\u{FE0F}','\u{1F4AA}','\u{1F9D8}','\u{1F6B4}','\u{1F3CA}','\u{1F957}','\u{1F4A7}','\u{1F634}','\u{1F9F9}','\u{1F3B8}','\u{1F3A8}','\u{1F9E0}','\u{1F48A}','\u{2600}\u{FE0F}','\u{1F319}','\u{1F4D3}','\u{1F34E}','\u{1F4B0}','\u{1F4F5}','\u{1F64F}','\u{2B50}'];
@@ -319,7 +327,10 @@ const habitById = id => S.habits.find(h=>h.id===id);
 const entry = (date,id) => (S.days[date]||{})[id] || null;
 const isDone = (date,id) => !!(entry(date,id)||{}).done;
 const anyDone = date => { const d = S.days[date]; return !!d && S.habits.some(h=>d[h.id] && d[h.id].done); };
-const allDone = date => { const d = S.days[date]; return !!d && S.habits.length>0 && S.habits.every(h=>d[h.id] && d[h.id].done); };
+const active = (hb,date) => !hb.start || date >= hb.start;
+const activeOn = date => S.habits.filter(h=>active(h,date));
+const allDone = date => { const list = activeOn(date); return list.length>0 && list.every(h=>isDone(date,h.id)); };
+const startTxt = hb => 'Starts ' + fmtDate(parseISO(hb.start), {weekday:'long', month:'long', day:'numeric'});
 
 function setEntry(date, id, patch){
   if(!S.days[date]) S.days[date] = {};
@@ -447,8 +458,9 @@ const cvar = h => `--c:var(--${h.color})`;
 /* ============================== TODAY ============================== */
 function renderToday(){
   const t = TODAY();
-  const total = S.habits.length;
-  const done = S.habits.filter(h=>isDone(t,h.id)).length;
+  const live = activeOn(t), soon = S.habits.filter(h=>!active(h,t));
+  const total = live.length;
+  const done = live.filter(h=>isDone(t,h.id)).length;
   const dStreak = streak(anyDone);
   const wk = startOfWeek(new Date());
 
@@ -460,11 +472,11 @@ function renderToday(){
     <div class="hero-stat"><b class="num">${dStreak}</b><span>Day streak</span></div>
   </div>`;
 
-  if(!total) return h + `<div class="card empty">No habits yet. Tap the gear up top to add one.</div>`;
+  if(!S.habits.length) return h + `<div class="card empty">No habits yet. Tap the gear up top to add one.</div>`;
 
   h += `<div class="sec-title">Today</div>`;
   const strip = lastNDays(7);
-  S.habits.forEach(hb=>{
+  live.forEach(hb=>{
     const e = entry(t,hb.id) || {};
     const on = !!e.done;
     const st = streak(d=>isDone(d,hb.id));
@@ -488,11 +500,20 @@ function renderToday(){
         ${showNote?`<textarea class="note" placeholder="Anything worth remembering?" data-notetxt="${hb.id}|${t}">${esc(e.note||'')}</textarea>`:''}
         <div class="strip">
           ${strip.map(d=>{
-            const dn = isDone(d,hb.id), isT = d===t;
-            return `<div class="sday"><button class="sbox ${dn?'on':''} ${isT?'today':''}" data-toggle="${hb.id}|${d}" aria-label="${d}"></button><small>${DOW1[(parseISO(d).getDay()+6)%7]}</small></div>`;
+            const dn = isDone(d,hb.id), isT = d===t, pre = !active(hb,d);
+            return `<div class="sday"><button class="sbox ${dn?'on':''} ${isT?'today':''} ${pre?'pre':''}" ${pre?'disabled':''} data-toggle="${hb.id}|${d}" aria-label="${d}"></button><small>${DOW1[(parseISO(d).getDay()+6)%7]}</small></div>`;
           }).join('')}
         </div>
       </div>
+    </div>`;
+  });
+  soon.forEach(hb=>{
+    h += `<div class="card hcard pending" style="${cvar(hb)}">
+      <div class="check pend"><span class="em">${emo(hb)}</span></div>
+      <div class="hbody"><div class="hrow"><div style="min-width:0">
+        <p class="hname">${esc(hb.name)}</p>
+        <p class="hsub">${startTxt(hb)} · ${hb.weekly}× a week${hb.goal?`, ${nice(hb.goal)} ${esc(hb.unit||'')}`:''}</p>
+      </div></div></div>
     </div>`;
   });
   return h;
@@ -509,8 +530,9 @@ function renderWeek(){
   const range = sameMonth
     ? `${fmtDate(s,{month:'long',day:'numeric'})} – ${e.getDate()}`
     : `${fmtDate(s,{month:'short',day:'numeric'})} – ${fmtDate(e,{month:'short',day:'numeric'})}`;
-  const totalDone = S.habits.reduce((a,hb)=>a+countInWeek(weekAnchor,hb.id),0);
-  const totalTarget = S.habits.reduce((a,hb)=>a+(hb.weekly||0),0);
+  const wkLive = S.habits.filter(hb=>dates.some(d=>active(hb,d)));
+  const totalDone = wkLive.reduce((a,hb)=>a+Math.min(countInWeek(weekAnchor,hb.id), hb.weekly||7),0);
+  const totalTarget = wkLive.reduce((a,hb)=>a+(hb.weekly||0),0);
 
   let h = `<div class="pnav">
     <div><h3>${isThis?'This week':range}</h3><div class="sub">${isThis?range:''}${isThis?'':''}</div></div>
@@ -525,12 +547,15 @@ function renderWeek(){
     ${S.habits.map(hb=>{
       const n = countInWeek(weekAnchor,hb.id);
       const tgt = hb.weekly||7;
+      const liveHere = dates.some(d=>active(hb,d));
       return `<div class="wrow" style="${cvar(hb)}">
-        <div class="wlab-top"><span class="em">${emo(hb)}</span><span>${esc(hb.name)}</span><b class="num ${n>=(hb.weekly||99)?'hit':''}">${n}/${hb.weekly||'-'}</b></div>
-        <div class="wbar"><i style="width:${Math.min(100,(n/tgt)*100)}%"></i></div>
+        <div class="wlab-top"><span class="em">${emo(hb)}</span><span>${esc(hb.name)}</span>${
+          liveHere ? `<b class="num ${n>=(hb.weekly||99)?'hit':''}">${n}/${hb.weekly||'-'}</b>`
+                   : `<span class="soon">${fmtDate(parseISO(hb.start),{month:'short',day:'numeric'})}</span>`}</div>
+        ${liveHere?`<div class="wbar"><i style="width:${Math.min(100,(n/tgt)*100)}%"></i></div>`:'<div style="height:9px"></div>'}
         <div class="wcells">${dates.map(d=>{
-          const dn = isDone(d,hb.id), fut = d>t;
-          return `<button class="cell ${dn?'on':''} ${d===t?'now':''} ${fut?'fut':''}" style="${cvar(hb)}" ${fut?'disabled':''} data-toggle="${hb.id}|${d}" data-tip="${esc(hb.name)} · ${fmtDate(parseISO(d),{weekday:'short',month:'short',day:'numeric'})}${dn?' · done':''}">${dn?SVG(ICONS.check):''}</button>`;
+          const dn = isDone(d,hb.id), fut = d>t, pre = !active(hb,d);
+          return `<button class="cell ${dn?'on':''} ${d===t&&!pre?'now':''} ${fut&&!pre?'fut':''} ${pre?'pre':''}" style="${cvar(hb)}" ${(fut||pre)?'disabled':''} data-toggle="${hb.id}|${d}" data-tip="${esc(hb.name)} · ${fmtDate(parseISO(d),{weekday:'short',month:'short',day:'numeric'})}${pre?' · not started yet':dn?' · done':''}">${dn?SVG(ICONS.check):''}</button>`;
         }).join('')}</div>
       </div>`;
     }).join('')}`;
@@ -567,9 +592,9 @@ function renderMonth(){
     ${Array.from({length:lead},()=>`<div class="mday pad"></div>`).join('')}
     ${dates.map(d=>{
       const fut = d>t;
-      const pips = S.habits.map(hb=>`<div class="pip ${isDone(d,hb.id)?'on':''}" style="${cvar(hb)}"></div>`).join('');
+      const pips = S.habits.map(hb=>`<div class="pip ${isDone(d,hb.id)?'on':''} ${active(hb,d)?'':'na'}" style="${cvar(hb)}"></div>`).join('');
       const n = S.habits.filter(hb=>isDone(d,hb.id)).length;
-      return `<button class="mday ${d===t?'now':''} ${fut?'fut':''}" data-day="${d}" data-tip="${fmtDate(parseISO(d),{weekday:'short',month:'short',day:'numeric'})} · ${n}/${S.habits.length}">
+      return `<button class="mday ${d===t?'now':''} ${fut?'fut':''}" data-day="${d}" data-tip="${fmtDate(parseISO(d),{weekday:'short',month:'short',day:'numeric'})} · ${n}/${activeOn(d).length}">
         <span class="d num">${parseISO(d).getDate()}</span>
         <div class="pips ${pipCls}">${pips}</div>
       </button>`;
@@ -582,8 +607,9 @@ function renderMonth(){
   const elapsed = thisMonth ? new Date().getDate() : last.getDate();
   S.habits.forEach((hb,idx)=>{
     const n = dates.filter(d=>isDone(d,hb.id)).length;
-    const expected = hb.weekly ? Math.max(1, Math.round(elapsed/7*hb.weekly)) : elapsed;
-    const pct = Math.min(100, Math.round(n/expected*100));
+    const done_days = dates.filter((d,i)=>i<elapsed && active(hb,d)).length;
+    const expected = hb.weekly ? Math.max(1, Math.round(done_days/7*hb.weekly)) : done_days;
+    const pct = done_days ? Math.min(100, Math.round(n/expected*100)) : 0;
     h += `<div style="${cvar(hb)};padding:11px 0;${idx===S.habits.length-1?'':'border-bottom:1px solid var(--line-soft)'}">
       <div style="display:flex;align-items:center;gap:9px;margin-bottom:6px">
         <span class="em" style="font-size:16px">${emo(hb)}</span>
@@ -591,7 +617,7 @@ function renderMonth(){
         <span style="margin-left:auto;font-size:12.5px;font-weight:700" class="num">${n} day${n===1?'':'s'}</span>
       </div>
       <div class="wbar" style="height:7px"><i style="width:${pct}%"></i></div>
-      <div style="font-size:11.5px;color:var(--faint);font-weight:600;margin-top:5px">${pct}% of pace${hb.weekly?` (${hb.weekly}× a week)`:''}</div>
+      <div style="font-size:11.5px;color:var(--faint);font-weight:600;margin-top:5px">${done_days ? `${pct}% of pace${hb.weekly?` (${hb.weekly}× a week)`:''}` : startTxt(hb)}</div>
     </div>`;
   });
   h += `</div>`;
@@ -610,8 +636,7 @@ function weeklySeries(id, n){
 function renderStats(){
   const t = TODAY();
   const l30 = lastNDays(30);
-  const totalTargets = S.habits.reduce((a,h)=>a+(h.weekly||7),0);
-  const expected30 = Math.round(totalTargets/7*30) || 1;
+  const expected30 = Math.max(1, Math.round(S.habits.reduce((a,h)=>a + (h.weekly||7)/7*l30.filter(d=>active(h,d)).length, 0)));
   const done30 = S.habits.reduce((a,h)=>a+l30.filter(d=>isDone(d,h.id)).length,0);
   const consistency = Math.min(100, Math.round(done30/expected30*100));
   const perfect = Object.keys(S.days).filter(d=>allDone(d)).length;
@@ -630,8 +655,9 @@ function renderStats(){
     const st = streak(d=>isDone(d,hb.id));
     const best = bestStreak(d=>isDone(d,hb.id));
     const n30 = l30.filter(d=>isDone(d,hb.id)).length;
-    const exp30 = Math.round((hb.weekly||7)/7*30) || 1;
-    const pct = Math.min(100, Math.round(n30/exp30*100));
+    const elig = l30.filter(d=>active(hb,d)).length;
+    const exp30 = Math.max(1, Math.round((hb.weekly||7)/7*elig));
+    const pct = elig ? Math.min(100, Math.round(n30/exp30*100)) : 0;
     const totalDays = Object.keys(S.days).filter(d=>isDone(d,hb.id)).length;
     const mStart = iso(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
     const thisMonth = Object.keys(S.days).filter(d=>d>=mStart && isDone(d,hb.id)).length;
@@ -639,14 +665,14 @@ function renderStats(){
     const max = Math.max(hb.weekly||1, ...series.map(s=>s.v), 1);
 
     h += `<div class="card scard" style="${cvar(hb)}">
-      <div class="shead"><span class="em">${emo(hb)}</span><h4>${esc(hb.name)}</h4><span class="pct num">${pct}% of pace</span></div>
+      <div class="shead"><span class="em">${emo(hb)}</span><h4>${esc(hb.name)}</h4><span class="pct num">${elig?`${pct}% of pace`:startTxt(hb)}</span></div>
       <div class="srow">
         <div class="sstat"><b class="num">${st}</b><span>Streak</span></div>
         <div class="sstat"><b class="num">${best}</b><span>Best</span></div>
         <div class="sstat"><b class="num">${thisMonth}</b><span>This month</span></div>
         <div class="sstat"><b class="num">${totalDays}</b><span>All time</span></div>
       </div>
-      <p class="chart-cap">Days completed per week — last 12 weeks</p>
+      ${elig ? `<p class="chart-cap">Days completed per week — last 12 weeks</p>
       <div class="chart">
         ${series.map(s=>{
           const pctH = Math.round(s.v/max*100);
@@ -654,7 +680,7 @@ function renderStats(){
           return `<div class="bar ${s.v?'':'empty'}" data-tip="Week of ${lbl} · ${s.v} day${s.v===1?'':'s'}"><i style="height:${s.v?Math.max(6,pctH):4}%"></i></div>`;
         }).join('')}
       </div>
-      <div class="xax"><span>${fmtDate(series[0].start,{month:'short',day:'numeric'})}</span><span>this week</span></div>
+      <div class="xax"><span>${fmtDate(series[0].start,{month:'short',day:'numeric'})}</span><span>this week</span></div>` : ''}
     </div>`;
   });
   return h;
@@ -673,10 +699,11 @@ function renderSheet(){
     body.innerHTML = `<div class="card" style="padding:4px 14px">
       ${S.habits.map(hb=>{
         const e = entry(sheetDate,hb.id)||{};
-        return `<button class="dayedit" style="${cvar(hb)}" data-dtoggle="${hb.id}">
-          <span class="mini ${e.done?'on':''}"><span class="em">${emo(hb)}</span>${e.done?`<span class="badge">${SVG(ICONS.check)}</span>`:''}</span>
+        const on = active(hb,sheetDate);
+        return `<button class="dayedit ${on?'':'pending'}" style="${cvar(hb)}" data-dtoggle="${hb.id}">
+          <span class="mini ${e.done?'on':''} ${on?'':'pend'}"><span class="em">${emo(hb)}</span>${e.done?`<span class="badge">${SVG(ICONS.check)}</span>`:''}</span>
           <span class="nm">${esc(hb.name)}</span>
-          <span class="dstate">${e.done?'Done':'Not yet'}</span>
+          <span class="dstate">${!on ? fmtDate(parseISO(hb.start),{month:'short',day:'numeric'}) : e.done?'Done':'Not yet'}</span>
         </button>`;
       }).join('')}
     </div>
@@ -697,7 +724,9 @@ function renderSheet(){
           <select class="inp" data-hf="${hb.id}|weekly">${[1,2,3,4,5,6,7].map(n=>`<option value="${n}" ${hb.weekly===n?'selected':''}>${n}×</option>`).join('')}</select>
         </div>
       </div>
-      <p class="hint" style="margin:8px 0 0;font-size:12px">The daily target is just a reminder on the card — leave it blank if the task is all that matters.</p>
+      <div style="margin-top:10px"><label class="lbl">Starts on</label>
+        <input type="date" class="inp" value="${hb.start||''}" data-hf="${hb.id}|start"></div>
+      <p class="hint" style="margin:8px 0 0;font-size:12px">The daily target is just a reminder on the card. A start date hides the habit from today's count until then — leave it blank to start now.</p>
       <label class="lbl" style="margin-top:12px">Color</label>
       <div class="swatches">${PAL.map(c=>`<button class="sw ${hb.color===c?'on':''}" style="background:${PAL_HEX[c]}" data-hcol="${hb.id}|${c}" aria-label="${c}"></button>`).join('')}</div>
       <label class="lbl" style="margin-top:12px">Emoji</label>
@@ -772,7 +801,8 @@ document.addEventListener('click', e=>{
 
   if((el = q('[data-toggle]'))){
     const [id,date] = el.dataset.toggle.split('|');
-    if(date > TODAY()) return;
+    const hb0 = habitById(id);
+    if(date > TODAY() || (hb0 && !active(hb0,date))) return;
     toggle(date,id); render(); pop(el.dataset.toggle); return;
   }
   if((el = q('[data-note]'))){
@@ -797,7 +827,11 @@ document.addEventListener('click', e=>{
   if(q('#sheetClose') || e.target === scrim){ closeSheet(); return; }
 
   /* ---- day sheet ---- */
-  if((el = q('[data-dtoggle]'))){ toggle(sheetDate, el.dataset.dtoggle); renderSheet(); return; }
+  if((el = q('[data-dtoggle]'))){
+    const hb0 = habitById(el.dataset.dtoggle);
+    if(sheetDate > TODAY() || (hb0 && !active(hb0,sheetDate))) return;
+    toggle(sheetDate, el.dataset.dtoggle); renderSheet(); return;
+  }
   if(q('#clearDay')){
     delete S.days[sheetDate]; saveLocal(); pushDay(sheetDate); renderSheet(); toast('Day cleared'); return;
   }
@@ -858,6 +892,7 @@ document.addEventListener('change', e=>{
     if(field==='unit')   hb.unit = t.value.trim();
     if(field==='goal')   hb.goal = t.value === '' ? null : Number(t.value);
     if(field==='weekly') hb.weekly = Number(t.value);
+    if(field==='start')  { if(t.value) hb.start = t.value; else delete hb.start; }
     pushConfig(); return;
   }
   if(t.id === 'impFile' && t.files[0]){
