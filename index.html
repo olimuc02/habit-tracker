@@ -242,7 +242,7 @@ input,select,textarea{font-family:inherit;font-size:15px;color:inherit}
   <div class="topbar-in">
     <div class="brand">Habits <small id="todayLbl"></small></div>
     <div class="spacer"></div>
-    <div class="sync" id="syncPill"><span class="dot off"></span><span id="syncTxt">local</span></div>
+    <div class="sync" id="syncPill"><span class="dot off"></span><span id="syncTxt">Local</span></div>
     <button class="iconbtn" id="btnEdit" title="Edit habits" aria-label="Edit habits">
       <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
     </button>
@@ -370,7 +370,7 @@ async function initCloud(){
       db = store.initializeFirestore(a, {localCache: store.persistentLocalCache({tabManager: store.persistentMultipleTabManager()})});
     }catch(e){ db = store.getFirestore(a); }
     syncOn = true;
-    syncState('on','synced');
+    syncState('on','Synced');
 
     store.onSnapshot(store.doc(db,'habit_config','main'), snap=>{
       const d = snap.data();
@@ -378,7 +378,7 @@ async function initCloud(){
       if((d.updatedAt||0) > (S.cfgUpdated||0)){
         S.habits = d.habits; S.cfgUpdated = d.updatedAt||0; saveLocal(); softRender();
       }
-    }, err=>syncState('err','offline'));
+    }, err=>syncState('err','Offline'));
 
     store.onSnapshot(store.collection(db,'habit_days'), snap=>{
       let touched = false;
@@ -392,11 +392,11 @@ async function initCloud(){
         }
       });
       if(touched){ saveLocal(); softRender(); }
-      syncState(navigator.onLine ? 'on' : 'off', navigator.onLine ? 'synced' : 'offline');
-    }, err=>syncState('err','offline'));
+      syncState(navigator.onLine ? 'on' : 'off', navigator.onLine ? 'Synced' : 'Offline');
+    }, err=>syncState('err','Offline'));
   }catch(e){
     console.warn('cloud off', e);
-    syncState('off','local only');
+    syncState('off','Local Only');
   }
 }
 function pushDay(date){
@@ -409,8 +409,8 @@ function pushConfig(){
   S.cfgUpdated = Date.now(); saveLocal();
   FS.setDoc(FS.doc(db,'habit_config','main'), {habits: S.habits, updatedAt: S.cfgUpdated}).catch(()=>{});
 }
-addEventListener('online',  ()=>syncState(syncOn?'on':'off', syncOn?'synced':'local only'));
-addEventListener('offline', ()=>syncState('off','offline'));
+addEventListener('online',  ()=>syncState(syncOn?'on':'off', syncOn?'Synced':'Local Only'));
+addEventListener('offline', ()=>syncState('off','Offline'));
 
 /* ============================== streaks & math ============================== */
 function streak(pred){
@@ -466,7 +466,7 @@ function renderToday(){
   let h = `<div class="card hero ${total&&done===total?'perfect':''}">${ring(done,total)}
     <div class="hero-txt">
       <h2>${fmtDate(new Date(),{weekday:'long'})}</h2>
-      <p>${total===0 ? 'Add a habit to get started' : done===total ? 'All done — perfect day 🎉' : `${total-done} left · ${fmtDate(new Date(),{month:'long',day:'numeric'})}`}</p>
+      <p>${total===0 ? 'Add a habit to get started' : done===total ? 'All Done — Perfect Day 🎉' : `${total-done} left · ${fmtDate(new Date(),{month:'long',day:'numeric'})}`}</p>
     </div>
     <div class="hero-stat"><b class="num">${dStreak}</b><span>Day streak</span></div>
   </div>`;
@@ -489,11 +489,11 @@ function renderToday(){
         <div class="hrow">
           <div style="min-width:0">
             <p class="hname">${esc(hb.name)}</p>
-            <p class="hsub">${[hb.goal?`${nice(hb.goal)} ${hb.unit||''}`.trim()+' a day':'', hb.weekly?`<b class="num" style="color:${wkN>=hb.weekly?'var(--c3)':'var(--muted)'}">${wkN}/${hb.weekly}</b> this week`:''].filter(Boolean).join(' · ')}</p>
+            <p class="hsub">${[hb.goal?`${nice(hb.goal)} ${hb.unit||''}`.trim()+' a Day':'', hb.weekly?`<b class="num" style="color:${wkN>=hb.weekly?'var(--c3)':'var(--muted)'}">${wkN}/${hb.weekly}</b> This Week`:''].filter(Boolean).join(' · ')}</p>
           </div>
           <div class="acts">
             ${st>0 ? `<span class="streak ${st>=3?'hot':''}">${SVG(ICONS.flame,'width="12" height="12" fill="currentColor" stroke="none"')}${st}</span>` : ''}
-            <button class="notebtn ${e.note?'on':''}" data-note="${hb.id}" aria-label="Note" data-tip="${e.note?'Edit note':'Add a note'}">${SVG(ICONS.note)}</button>
+            <button class="notebtn ${e.note?'on':''}" data-note="${hb.id}" aria-label="Note" data-tip="${e.note?'Edit Note':'Add Note'}">${SVG(ICONS.note)}</button>
           </div>
         </div>
         ${showNote?`<textarea class="note" placeholder="Anything worth remembering?" data-notetxt="${hb.id}|${t}">${esc(e.note||'')}</textarea>`:''}
@@ -511,7 +511,7 @@ function renderToday(){
       <div class="check pend"><span class="em">${emo(hb)}</span></div>
       <div class="hbody"><div class="hrow"><div style="min-width:0">
         <p class="hname">${esc(hb.name)}</p>
-        <p class="hsub">${startTxt(hb)} · ${hb.weekly}× a week${hb.goal?`, ${nice(hb.goal)} ${esc(hb.unit||'')}`:''}</p>
+        <p class="hsub">${startTxt(hb)} · ${hb.weekly}× a Week${hb.goal?`, ${nice(hb.goal)} ${esc(hb.unit||'')}`:''}</p>
       </div></div></div>
     </div>`;
   });
@@ -534,9 +534,9 @@ function renderWeek(){
   const totalTarget = wkLive.reduce((a,hb)=>a+(hb.weekly||0),0);
 
   let h = `<div class="pnav">
-    <div><h3>${isThis?'This week':range}</h3><div class="sub">${isThis?range:''}${isThis?'':''}</div></div>
+    <div><h3>${isThis?'This Week':range}</h3><div class="sub">${isThis?range:''}${isThis?'':''}</div></div>
     <div class="spacer"></div>
-    ${!isThis?`<button class="today-b" data-wk="now">This week</button>`:''}
+    ${!isThis?`<button class="today-b" data-wk="now">This Week</button>`:''}
     <button class="nav-b" data-wk="-1">${SVG('<path d="m15 18-6-6 6-6"/>','width="16" height="16"')}</button>
     <button class="nav-b" data-wk="1" ${iso(addDays(weekAnchor,7))>thisWk?'disabled':''}>${SVG('<path d="m9 18 6-6-6-6"/>','width="16" height="16"')}</button>
   </div>`;
@@ -561,8 +561,8 @@ function renderWeek(){
 
   const perfect = dates.filter(d=>d<=t && allDone(d)).length;
   h += `<div class="legend" style="padding:14px 0 4px;border-top:1px solid var(--line-soft);margin-top:12px">
-      <div class="lg" style="--c:var(--ink)"><i></i><b style="color:var(--ink)">${totalDone}/${totalTarget||'-'}</b> target days hit</div>
-      ${perfect?`<div class="lg" style="--c:var(--c3)"><i></i><b style="color:var(--ink)">${perfect}</b> perfect ${perfect===1?'day':'days'}</div>`:''}
+      <div class="lg" style="--c:var(--ink)"><i></i><b style="color:var(--ink)">${totalDone}/${totalTarget||'-'}</b> Target Days Hit</div>
+      ${perfect?`<div class="lg" style="--c:var(--c3)"><i></i><b style="color:var(--ink)">${perfect}</b> Perfect ${perfect===1?'Day':'Days'}</div>`:''}
     </div></div>`;
   return h;
 }
@@ -581,7 +581,7 @@ function renderMonth(){
   let h = `<div class="pnav">
     <div><h3>${MONTHS[m]} ${y}</h3></div>
     <div class="spacer"></div>
-    ${!thisMonth?`<button class="today-b" data-mo="now">This month</button>`:''}
+    ${!thisMonth?`<button class="today-b" data-mo="now">This Month</button>`:''}
     <button class="nav-b" data-mo="-1">${SVG('<path d="m15 18-6-6 6-6"/>','width="16" height="16"')}</button>
     <button class="nav-b" data-mo="1" ${thisMonth?'disabled':''}>${SVG('<path d="m9 18 6-6-6-6"/>','width="16" height="16"')}</button>
   </div>`;
@@ -602,7 +602,7 @@ function renderMonth(){
   <div class="legend">${S.habits.map(hb=>`<div class="lg" style="${cvar(hb)}"><i></i><span class="em">${emo(hb)}</span> ${esc(hb.name)}</div>`).join('')}</div>
   </div>`;
 
-  h += `<div class="sec-title">${MONTHS[m]} progress</div><div class="card" style="padding:6px 16px 14px">`;
+  h += `<div class="sec-title">${MONTHS[m]} Progress</div><div class="card" style="padding:6px 16px 14px">`;
   const elapsed = thisMonth ? new Date().getDate() : last.getDate();
   S.habits.forEach((hb,idx)=>{
     const n = dates.filter(d=>isDone(d,hb.id)).length;
@@ -613,10 +613,10 @@ function renderMonth(){
       <div style="display:flex;align-items:center;gap:9px;margin-bottom:6px">
         <span class="em" style="font-size:16px">${emo(hb)}</span>
         <span style="font-size:13.5px;font-weight:600">${esc(hb.name)}</span>
-        <span style="margin-left:auto;font-size:12.5px;font-weight:700" class="num">${n} day${n===1?'':'s'}</span>
+        <span style="margin-left:auto;font-size:12.5px;font-weight:700" class="num">${n} Day${n===1?'':'s'}</span>
       </div>
       <div class="wbar" style="height:7px"><i style="width:${pct}%"></i></div>
-      <div style="font-size:11.5px;color:var(--faint);font-weight:600;margin-top:5px">${done_days ? `${pct}% of pace${hb.weekly?` (${hb.weekly}× a week)`:''}` : startTxt(hb)}</div>
+      <div style="font-size:11.5px;color:var(--faint);font-weight:600;margin-top:5px">${done_days ? `${pct}% of Pace${hb.weekly?` (${hb.weekly}× a Week)`:''}` : startTxt(hb)}</div>
     </div>`;
   });
   h += `</div>`;
@@ -648,7 +648,7 @@ function renderStats(){
   </div>`;
 
   if(!S.habits.length) return h;
-  h += `<div class="sec-title">By habit</div>`;
+  h += `<div class="sec-title">By Habit</div>`;
 
   S.habits.forEach(hb=>{
     const st = streak(d=>isDone(d,hb.id));
@@ -664,22 +664,22 @@ function renderStats(){
     const max = Math.max(hb.weekly||1, ...series.map(s=>s.v), 1);
 
     h += `<div class="card scard" style="${cvar(hb)}">
-      <div class="shead"><span class="em">${emo(hb)}</span><h4>${esc(hb.name)}</h4><span class="pct num">${elig?`${pct}% of pace`:startTxt(hb)}</span></div>
+      <div class="shead"><span class="em">${emo(hb)}</span><h4>${esc(hb.name)}</h4><span class="pct num">${elig?`${pct}% of Pace`:startTxt(hb)}</span></div>
       <div class="srow">
         <div class="sstat"><b class="num">${st}</b><span>Streak</span></div>
         <div class="sstat"><b class="num">${best}</b><span>Best</span></div>
         <div class="sstat"><b class="num">${thisMonth}</b><span>This month</span></div>
         <div class="sstat"><b class="num">${totalDays}</b><span>All time</span></div>
       </div>
-      ${elig ? `<p class="chart-cap">Days completed per week — last 12 weeks</p>
+      ${elig ? `<p class="chart-cap">Days Completed Per Week — Last 12 Weeks</p>
       <div class="chart">
         ${series.map(s=>{
           const pctH = Math.round(s.v/max*100);
           const lbl = fmtDate(s.start,{month:'short',day:'numeric'});
-          return `<div class="bar ${s.v?'':'empty'}" data-tip="Week of ${lbl} · ${s.v} day${s.v===1?'':'s'}"><i style="height:${s.v?Math.max(6,pctH):4}%"></i></div>`;
+          return `<div class="bar ${s.v?'':'empty'}" data-tip="Week of ${lbl} · ${s.v} Day${s.v===1?'':'s'}"><i style="height:${s.v?Math.max(6,pctH):4}%"></i></div>`;
         }).join('')}
       </div>
-      <div class="xax"><span>${fmtDate(series[0].start,{month:'short',day:'numeric'})}</span><span>this week</span></div>` : ''}
+      <div class="xax"><span>${fmtDate(series[0].start,{month:'short',day:'numeric'})}</span><span>This Week</span></div>` : ''}
     </div>`;
   });
   return h;
@@ -702,14 +702,14 @@ function renderSheet(){
         return `<button class="dayedit ${on?'':'pending'}" style="${cvar(hb)}" data-dtoggle="${hb.id}">
           <span class="mini ${e.done?'on':''} ${on?'':'pend'}"><span class="em">${emo(hb)}</span>${e.done?`<span class="badge">${SVG(ICONS.check)}</span>`:''}</span>
           <span class="nm">${esc(hb.name)}</span>
-          <span class="dstate">${!on ? fmtDate(parseISO(hb.start),{month:'short',day:'numeric'}) : e.done?'Done':'Not yet'}</span>
+          <span class="dstate">${!on ? fmtDate(parseISO(hb.start),{month:'short',day:'numeric'}) : e.done?'Done':'Not Yet'}</span>
         </button>`;
       }).join('')}
     </div>
-    <div class="row-b"><button class="btn btn-ghost btn-full" id="clearDay">Clear this day</button></div>`;
+    <div class="row-b"><button class="btn btn-ghost btn-full" id="clearDay">Clear This Day</button></div>`;
     return;
   }
-  title.textContent = 'Habits & settings';
+  title.textContent = 'Habits & Settings';
   body.innerHTML = S.habits.map((hb,i)=>`
     <div class="card ecard" style="${cvar(hb)}">
       <div class="ehead">
@@ -737,13 +737,13 @@ function renderSheet(){
         <button class="btn btn-red" data-hdel="${hb.id}">Delete</button>
       </div>
     </div>`).join('')
-    + `<button class="btn btn-dark btn-full" id="addHabit" style="margin-top:4px">+ Add habit</button>
-    <div class="sec-title">Sync & data</div>
+    + `<button class="btn btn-dark btn-full" id="addHabit" style="margin-top:4px">+ Add Habit</button>
+    <div class="sec-title">Sync & Data</div>
     <div class="card" style="padding:15px">
       <p class="hint" id="syncHint"></p>
-      <div class="row-b"><button class="btn btn-ghost" id="exp">Export backup</button><button class="btn btn-ghost" id="imp">Import backup</button></div>
+      <div class="row-b"><button class="btn btn-ghost" id="exp">Export Backup</button><button class="btn btn-ghost" id="imp">Import Backup</button></div>
       <input type="file" id="impFile" accept="application/json" style="display:none">
-      <div class="row-b"><button class="btn btn-red btn-full" id="wipe">Erase all history</button></div>
+      <div class="row-b"><button class="btn btn-red btn-full" id="wipe">Erase All History</button></div>
     </div>`;
   const hint = document.getElementById('syncHint');
   hint.innerHTML = syncOn
@@ -832,7 +832,7 @@ document.addEventListener('click', e=>{
     toggle(sheetDate, el.dataset.dtoggle); renderSheet(); return;
   }
   if(q('#clearDay')){
-    delete S.days[sheetDate]; saveLocal(); pushDay(sheetDate); renderSheet(); toast('Day cleared'); return;
+    delete S.days[sheetDate]; saveLocal(); pushDay(sheetDate); renderSheet(); toast('Day Cleared'); return;
   }
 
   /* ---- edit sheet ---- */
@@ -855,7 +855,7 @@ document.addEventListener('click', e=>{
     const id = el.dataset.hdel, hb = habitById(id);
     if(!confirm(`Delete "${hb.name}"? Its history stays saved in case you add it back.`)) return;
     S.habits = S.habits.filter(h=>h.id!==id);
-    pushConfig(); renderSheet(); toast('Habit deleted'); return;
+    pushConfig(); renderSheet(); toast('Habit Deleted'); return;
   }
   if(q('#addHabit')){
     const used = S.habits.map(h=>h.color);
@@ -877,7 +877,7 @@ document.addEventListener('click', e=>{
     const keys = Object.keys(S.days);
     S.days = {}; saveLocal();
     if(syncOn) keys.forEach(k=>FS.deleteDoc(FS.doc(db,'habit_days',k)).catch(()=>{}));
-    renderSheet(); toast('History erased'); return;
+    renderSheet(); toast('History Erased'); return;
   }
 });
 
@@ -903,7 +903,7 @@ document.addEventListener('change', e=>{
         if(Array.isArray(d.habits) && d.habits.length) S.habits = d.habits;
         S.days = d.days; saveLocal(); pushConfig();
         if(syncOn) Object.keys(S.days).forEach(k=>pushDay(k));
-        renderSheet(); render(); toast('Backup restored');
+        renderSheet(); render(); toast('Backup Restored');
       }catch(err){ alert('That file could not be read.'); }
     };
     fr.readAsText(t.files[0]); t.value = '';
