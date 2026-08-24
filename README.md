@@ -1,16 +1,16 @@
 # Habits
 
-A habit tracker for running, reading, writing the book, and language learning.
+A habit tracker for running (3x/week), reading (20 min a day), writing the book (60 min, 5x/week), and language learning (20 min a day).
 One page, no build step, syncs between your laptop and iPhone automatically.
 
 ## Views
-- **Today** — tap the big square to check a habit off, type an amount (miles, pages, words, minutes), leave a note, and see the last 7 days.
+- **Today** — tap the big square to check a habit off, type an amount (miles or minutes), leave a note, and see the last 7 days.
 - **Week** — a grid of the whole week. Tap any square to fill in a day you missed. Each row shows how many days you hit against your weekly target.
 - **Month** — a calendar where every day shows four small colored bars, one per habit. Tap a day to edit it. Below, each habit shows days completed and how you're pacing.
 - **Stats** — streaks, best streaks, 30-day consistency, and a 12-week bar chart per habit.
 
 ## Editing habits
-The gear in the top right: rename, change the unit and daily goal, set how many days a week you want it, pick a color and icon, reorder, add or delete. Also export/import a backup.
+The gear in the top right: rename, pick an emoji, change the unit and daily goal, set how many days a week you want it, pick a color, reorder, add or delete. Also export/import a backup.
 
 ## Sync
 Uses the existing `tasks-oj` Firebase project (Firestore).
