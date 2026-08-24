@@ -20,7 +20,7 @@
   --muted:#6B7280; --faint:#A5A29C;
   --line:#E8E5E0; --line-soft:#F1EFEB; --sunk:#EFEDE8;
   --c1:#2a78d6; --c2:#eb6834; --c3:#1baf7a; --c4:#4a3aa7;
-  --c5:#e34948; --c6:#eda100; --c7:#e87ba4; --c8:#008300;
+  --c5:#c2185b; --c6:#eda100; --c7:#e87ba4; --c8:#008300;
   --radius:16px;
   --safe-b:env(safe-area-inset-bottom,0px);
 }
@@ -153,9 +153,7 @@ input,select,textarea{font-family:inherit;font-size:15px;color:inherit}
 .mday.fut{background:#FBFAF8;opacity:.6}
 .mday .d{font-size:11.5px;font-weight:700;color:var(--ink-2);line-height:1}
 .mday.fut .d{color:var(--faint)}
-.pips{display:grid;grid-template-columns:1fr 1fr;gap:2.5px;width:100%;max-width:26px;margin-top:auto;margin-bottom:1px}
-.pips.one{grid-template-columns:1fr;max-width:16px}
-.pips.three{max-width:26px}
+.pips{display:grid;gap:2.5px;width:100%;margin-top:auto;margin-bottom:1px}
 .pip{height:7px;border-radius:2.5px;background:var(--line-soft)}
 .pip.on{background:var(--c)}
 .legend{display:flex;flex-wrap:wrap;gap:12px;padding:2px 16px 14px}
@@ -275,7 +273,7 @@ input,select,textarea{font-family:inherit;font-size:15px;color:inherit}
 <script type="module">
 /* ============================== constants ============================== */
 const PAL = ['c1','c2','c3','c4','c5','c6','c7','c8'];
-const PAL_HEX = {c1:'#2a78d6',c2:'#eb6834',c3:'#1baf7a',c4:'#4a3aa7',c5:'#e34948',c6:'#eda100',c7:'#e87ba4',c8:'#008300'};
+const PAL_HEX = {c1:'#2a78d6',c2:'#eb6834',c3:'#1baf7a',c4:'#4a3aa7',c5:'#c2185b',c6:'#eda100',c7:'#e87ba4',c8:'#008300'};
 const SVG = (p,extra='') => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ${extra}>${p}</svg>`;
 const ICONS = {
   check:'<path d="M20 6 9 17l-5-5"/>',
@@ -287,6 +285,7 @@ const DEFAULTS = [
   {id:'reading',  name:'Reading',           emoji:'\u{1F4D6}',       color:'c2', unit:'min', goal:20,   weekly:7},
   {id:'writing',  name:'Writing Book',      emoji:'\u{270D}\u{FE0F}', color:'c3', unit:'min', goal:60, weekly:5, start:'2026-09-01'},
   {id:'language', name:'Language Learning', emoji:'\u{1F5E3}\u{FE0F}', color:'c4', unit:'min', goal:20, weekly:7},
+  {id:'water',    name:'Drink Water',        emoji:'\u{1F4A7}',       color:'c5', unit:'',    goal:null, weekly:7},
 ];
 const EMOJI_SET = ['\u{1F3C3}','\u{1F4D6}','\u{270D}\u{FE0F}','\u{1F5E3}\u{FE0F}','\u{1F4AA}','\u{1F9D8}','\u{1F6B4}','\u{1F3CA}','\u{1F957}','\u{1F4A7}','\u{1F634}','\u{1F9F9}','\u{1F3B8}','\u{1F3A8}','\u{1F9E0}','\u{1F48A}','\u{2600}\u{FE0F}','\u{1F319}','\u{1F4D3}','\u{1F34E}','\u{1F4B0}','\u{1F4F5}','\u{1F64F}','\u{2B50}'];
 const emo = h => h.emoji || '\u{2B50}';
@@ -577,7 +576,7 @@ function renderMonth(){
   const thisMonth = y===new Date().getFullYear() && m===new Date().getMonth();
   const dates = [];
   for(let d=1; d<=last.getDate(); d++) dates.push(iso(new Date(y,m,d)));
-  const pipCls = S.habits.length===1?'one':'';
+  const pipCols = S.habits.length===4 ? 2 : Math.min(Math.max(S.habits.length,1), 6);
 
   let h = `<div class="pnav">
     <div><h3>${MONTHS[m]} ${y}</h3></div>
@@ -596,7 +595,7 @@ function renderMonth(){
       const n = S.habits.filter(hb=>isDone(d,hb.id)).length;
       return `<button class="mday ${d===t?'now':''} ${fut?'fut':''}" data-day="${d}" data-tip="${fmtDate(parseISO(d),{weekday:'short',month:'short',day:'numeric'})} · ${n}/${activeOn(d).length}">
         <span class="d num">${parseISO(d).getDate()}</span>
-        <div class="pips ${pipCls}">${pips}</div>
+        <div class="pips" style="grid-template-columns:repeat(${pipCols},1fr);max-width:${pipCols<=2?16*pipCols:34}px">${pips}</div>
       </button>`;
     }).join('')}
   </div>

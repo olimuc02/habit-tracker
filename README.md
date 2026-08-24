@@ -1,6 +1,6 @@
 # Habits
 
-A habit tracker for running (3x/week), reading (20 min a day), writing the book (60 min, 5x/week, starting 1 September 2026), and language learning (20 min a day).
+A habit tracker for running (3x/week), reading (20 min a day), writing the book (60 min, 5x/week, starting 1 September 2026), language learning (20 min a day), and drinking water (every day).
 
 There is nothing to measure — you check the task off and that's it. The daily targets are printed on the cards as reminders only.
 One page, no build step, syncs between your laptop and iPhone automatically.
@@ -8,7 +8,7 @@ One page, no build step, syncs between your laptop and iPhone automatically.
 ## Views
 - **Today** — tap the square to check a habit off, leave a note with the pencil, and see the last 7 days. There is nothing to log but the task itself.
 - **Week** — a grid of the whole week. Tap any square to fill in a day you missed. Each row shows how many days you hit against your weekly target.
-- **Month** — a calendar where every day shows four small colored bars, one per habit. Tap a day to edit it. Below, each habit shows days completed and how you're pacing.
+- **Month** — a calendar where every day shows a small colored bar per habit. Tap a day to edit it. Below, each habit shows days completed and how you're pacing.
 - **Stats** — streaks, best streaks, 30-day consistency, days this month and all time, and a 12-week bar chart per habit.
 
 ## Editing habits
