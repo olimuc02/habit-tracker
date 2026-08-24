@@ -113,6 +113,64 @@ input,select,textarea{font-family:inherit;font-size:15px;color:inherit}
 .note{margin-top:11px;width:100%;border:1px solid var(--line-soft);background:#FCFBF9;border-radius:10px;padding:8px 10px;font-size:13.5px;resize:none;outline:none;min-height:34px;transition:border-color .15s}
 .note:focus{border-color:var(--line);background:#fff}
 
+/* ---------- water cup ---------- */
+.cupsvg{display:block;width:100%;height:100%;overflow:visible}
+.lq{transition:transform .9s cubic-bezier(.32,.72,0,1)}
+.wv{animation:wv 3.4s linear infinite}
+.wv2{animation:wv 5.1s linear infinite reverse}
+@keyframes wv{to{transform:translateX(-120px)}}
+@media(prefers-reduced-motion:reduce){.wv,.wv2{animation:none}}
+
+.cupmini{width:52px;height:58px;flex:none;position:relative;transition:transform .16s cubic-bezier(.34,1.6,.64,1)}
+.cupmini:active{transform:scale(.9)}
+.cupmini .badge{right:-7px;bottom:-2px}
+.wfill{display:flex;align-items:center;gap:9px;margin-top:9px;width:100%;text-align:left}
+.wfill .track{flex:1;height:8px;border-radius:4px;background:var(--line-soft);overflow:hidden}
+.wfill .track i{display:block;height:100%;border-radius:4px;background:var(--c);transition:width .7s cubic-bezier(.32,.72,0,1)}
+.wfill .add{flex:none;display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:5px 11px;border-radius:999px;background:color-mix(in srgb,var(--c) 12%,#fff);color:var(--c);transition:background .15s}
+.wfill .add:hover{background:color-mix(in srgb,var(--c) 20%,#fff)}
+.wfill .add svg{width:12px;height:12px;stroke-width:3}
+
+.cupbig{width:146px;height:170px;margin:0 auto;position:relative}
+.cupbig.splash{animation:splash .5s cubic-bezier(.34,1.6,.64,1)}
+@keyframes splash{0%{transform:scale(1)}35%{transform:scale(1.06) rotate(-1.5deg)}100%{transform:scale(1)}}
+.bub{position:absolute;border-radius:50%;background:#fff;opacity:0;pointer-events:none}
+@keyframes bub{0%{transform:translateY(0);opacity:0}25%{opacity:.6}100%{transform:translateY(-72px);opacity:0}}
+
+.wtop{text-align:center;padding:20px 16px 4px}
+.wbig{font-size:34px;font-weight:800;letter-spacing:-.035em;line-height:1.05;margin-top:14px}
+.wbig span{font-size:17px;font-weight:700;color:var(--faint)}
+.wsub{font-size:13px;color:var(--muted);font-weight:600;margin-top:3px}
+.wsub b{color:var(--c3)}
+
+.dchips{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.dchip{padding:10px 4px 8px;border-radius:13px;border:1.5px solid var(--line);background:#fff;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all .14s}
+.dchip .e{font-size:21px;line-height:1}
+.dchip small{font-size:10.5px;font-weight:700;color:var(--muted)}
+.dchip:hover{background:#FAF9F7}
+.dchip.on{border-color:var(--ink);background:var(--sunk)}
+.dchip.on small{color:var(--ink)}
+
+.amts{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.abtn{padding:12px 4px;border-radius:13px;background:var(--ink);color:#fff;font-size:14.5px;font-weight:700;transition:transform .14s,background .14s}
+.abtn:active{transform:scale(.94)}
+.abtn:hover{background:#2A2E36}
+.acustom{display:flex;gap:8px;margin-top:10px}
+.acustom input{flex:1;padding:11px;border:1px solid var(--line);border-radius:12px;text-align:center;font-weight:700;outline:none;background:#fff}
+.acustom input:focus{border-color:#B4AFA6;box-shadow:0 0 0 3px rgba(20,22,28,.05)}
+
+.dlog{margin-top:4px}
+.dlog-row{display:flex;align-items:center;gap:11px;padding:11px 2px;border-bottom:1px solid var(--line-soft)}
+.dlog-row:last-child{border-bottom:0}
+.dlog-row .e{font-size:19px;line-height:1}
+.dlog-row .nm{font-size:14px;font-weight:600;flex:1;min-width:0}
+.dlog-row .amt-v{font-size:14px;font-weight:700}
+.dlog-row time{font-size:11.5px;color:var(--faint);font-weight:600;width:44px;text-align:right}
+.xbtn{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;color:var(--faint);flex:none;transition:all .14s}
+.xbtn:hover{background:var(--sunk);color:var(--c5)}
+.wbreak{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.wtag{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:5px 10px;border-radius:999px;background:var(--sunk);color:var(--ink-2)}
+
 /* ---------- period nav ---------- */
 .pnav{display:flex;align-items:center;gap:10px;margin-bottom:12px}
 .pnav h3{margin:0;font-size:17px;font-weight:700;letter-spacing:-.01em}
@@ -281,14 +339,26 @@ const ICONS = {
   flame:'<path d="M12 22c4 0 7-2.8 7-6.5 0-4.5-4-6.5-4-10.5-3 1.5-4 4-4 6-1.5-1-2-2.5-2-4C6.5 9 5 11.5 5 15.5 5 19.2 8 22 12 22z"/>'
 };
 const DEFAULTS = [
-  {id:'running',  name:'Running',           emoji:'\u{1F3C3}',       color:'c1', unit:'',    goal:null, weekly:3},
+  {id:'running',  name:'Running',           emoji:'\u{1F3C3}',       color:'c5', unit:'',    goal:null, weekly:3},
   {id:'reading',  name:'Reading',           emoji:'\u{1F4D6}',       color:'c2', unit:'min', goal:20,   weekly:7},
   {id:'writing',  name:'Writing Book',      emoji:'\u{270D}\u{FE0F}', color:'c3', unit:'min', goal:60, weekly:5, start:'2026-09-01'},
   {id:'language', name:'Language Learning', emoji:'\u{1F5E3}\u{FE0F}', color:'c4', unit:'min', goal:20, weekly:7},
-  {id:'water',    name:'Drink Water',        emoji:'\u{1F4A7}',       color:'c5', unit:'',    goal:null, weekly:7},
+  {id:'water',    name:'Drink Water',        emoji:'\u{1F4A7}',       color:'c1', unit:'oz',  goal:80, weekly:7, kind:'water'},
 ];
 const EMOJI_SET = ['\u{1F3C3}','\u{1F4D6}','\u{270D}\u{FE0F}','\u{1F5E3}\u{FE0F}','\u{1F4AA}','\u{1F9D8}','\u{1F6B4}','\u{1F3CA}','\u{1F957}','\u{1F4A7}','\u{1F634}','\u{1F9F9}','\u{1F3B8}','\u{1F3A8}','\u{1F9E0}','\u{1F48A}','\u{2600}\u{FE0F}','\u{1F319}','\u{1F4D3}','\u{1F34E}','\u{1F4B0}','\u{1F4F5}','\u{1F64F}','\u{2B50}'];
 const emo = h => h.emoji || '\u{2B50}';
+const DRINKS = [
+  {k:'water',    emoji:'\u{1F4A7}', name:'Water'},
+  {k:'coffee',   emoji:'\u{2615}',  name:'Coffee'},
+  {k:'tea',      emoji:'\u{1F375}', name:'Tea'},
+  {k:'sparkling',emoji:'\u{1FAE7}', name:'Sparkling'},
+  {k:'juice',    emoji:'\u{1F9C3}', name:'Juice'},
+  {k:'milk',     emoji:'\u{1F95B}', name:'Milk'},
+  {k:'smoothie', emoji:'\u{1F964}', name:'Smoothie'},
+  {k:'other',    emoji:'\u{1F379}', name:'Other'},
+];
+const drinkBy = k => DRINKS.find(d=>d.k===k) || DRINKS[0];
+const QUICK = unit => /ml|l\b/i.test(unit||'') ? [200,330,500,750] : [8,12,16,24];
 const DOW = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 const DOW1 = ['M','T','W','T','F','S','S'];
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -336,7 +406,8 @@ function setEntry(date, id, patch){
   const cur = S.days[date][id] || {done:false, note:''};
   S.days[date][id] = {...cur, ...patch};
   const e = S.days[date][id];
-  if(!e.done && !e.note) delete S.days[date][id];
+  if(e.drinks === null) delete e.drinks;
+  if(!e.done && !e.note && !(e.drinks||[]).length) delete S.days[date][id];
   if(!Object.keys(S.days[date]).length) delete S.days[date];
   saveLocal(); pushDay(date);
 }
@@ -431,6 +502,35 @@ function bestStreak(pred){
 }
 function weekDates(anchor){ return Array.from({length:7},(_,i)=>iso(addDays(anchor,i))); }
 function countInWeek(anchor,id){ return weekDates(anchor).filter(d=>isDone(d,id)).length; }
+const drinksOf = (date,id) => ((entry(date,id)||{}).drinks) || [];
+const drankTotal = (date,id) => drinksOf(date,id).reduce((a,d)=>a+(Number(d.a)||0),0);
+function logDrink(date, id, k, amount){
+  const hb = habitById(id);
+  const list = [...drinksOf(date,id), {k, a:Number(amount)||0, t:new Date().toTimeString().slice(0,5)}];
+  const total = list.reduce((a,d)=>a+d.a,0);
+  setEntry(date, id, {drinks:list, done: hb.goal ? total >= hb.goal : true});
+}
+function removeDrink(date, id, i){
+  const hb = habitById(id);
+  const list = drinksOf(date,id).filter((_,j)=>j!==i);
+  const total = list.reduce((a,d)=>a+d.a,0);
+  setEntry(date, id, {drinks:list.length?list:null, done: hb.goal ? total >= hb.goal : list.length>0});
+}
+function cup(pct, id, h){
+  const H = 180, y = Math.round((1-Math.max(0,Math.min(1,pct)))*H);
+  const path = 'M18 10 h84 l-9 148 a14 14 0 0 1 -14 12 h-38 a14 14 0 0 1 -14 -12 z';
+  return `<svg class="cupsvg" viewBox="0 0 120 180" style="${cvar(h)}">
+    <defs><clipPath id="${id}"><path d="${path}"/></clipPath></defs>
+    <g clip-path="url(#${id})">
+      <rect x="0" y="0" width="120" height="180" fill="var(--line-soft)"/>
+      <g class="lq" data-fill style="transform:translateY(${y}px)">
+        <path class="wv"  d="M0 12 q30 -12 60 0 t60 0 t60 0 t60 0 V200 H0 Z" fill="var(--c)" opacity=".55"/>
+        <path class="wv2" d="M0 14 q30 -12 60 0 t60 0 t60 0 t60 0 V200 H0 Z" fill="var(--c)" opacity=".92"/>
+      </g>
+    </g>
+    <path d="${path}" fill="none" stroke="color-mix(in srgb,var(--c) 32%,#fff)" stroke-width="3.5" stroke-linejoin="round"/>
+  </svg>`;
+}
 function lastNDays(n){ const out=[]; for(let i=n-1;i>=0;i--) out.push(iso(addDays(new Date(),-i))); return out; }
 function nice(n){
   if(n === null || n === undefined || isNaN(n)) return '0';
@@ -478,24 +578,35 @@ function renderToday(){
   live.forEach(hb=>{
     const e = entry(t,hb.id) || {};
     const on = !!e.done;
+    const isWater = hb.kind === 'water';
+    const drank = isWater ? drankTotal(t,hb.id) : 0;
+    const pct = isWater && hb.goal ? drank/hb.goal : (on?1:0);
     const st = streak(d=>isDone(d,hb.id));
     const wkN = countInWeek(wk,hb.id);
     const showNote = openNotes.has(hb.id) || !!e.note;
     h += `<div class="card hcard ${on?'done':''}" style="${cvar(hb)}">
-      <button class="check ${on?'on':''}" data-toggle="${hb.id}|${t}" aria-label="Mark ${esc(hb.name)} done">
+      ${isWater
+        ? `<button class="cupmini" data-water="${hb.id}" aria-label="Log a drink">${cup(pct,'cupCard',hb)}${on?`<span class="badge">${SVG(ICONS.check)}</span>`:''}</button>`
+        : `<button class="check ${on?'on':''}" data-toggle="${hb.id}|${t}" aria-label="Mark ${esc(hb.name)} done">
         <span class="em">${emo(hb)}</span>${on?`<span class="badge">${SVG(ICONS.check)}</span>`:''}
-      </button>
+      </button>`}
       <div class="hbody">
         <div class="hrow">
           <div style="min-width:0">
             <p class="hname">${esc(hb.name)}</p>
-            <p class="hsub">${[hb.goal?`${nice(hb.goal)} ${hb.unit||''}`.trim()+' a Day':'', hb.weekly?`<b class="num" style="color:${wkN>=hb.weekly?'var(--c3)':'var(--muted)'}">${wkN}/${hb.weekly}</b> This Week`:''].filter(Boolean).join(' · ')}</p>
+            <p class="hsub">${isWater
+              ? `<b class="num" style="color:${on?'var(--c3)':'var(--ink-2)'}">${nice(drank)}/${nice(hb.goal)} ${esc(hb.unit||'')}</b> · <b class="num" style="color:${wkN>=hb.weekly?'var(--c3)':'var(--muted)'}">${wkN}/${hb.weekly}</b> This Week`
+              : [hb.goal?`${nice(hb.goal)} ${hb.unit||''}`.trim()+' a Day':'', hb.weekly?`<b class="num" style="color:${wkN>=hb.weekly?'var(--c3)':'var(--muted)'}">${wkN}/${hb.weekly}</b> This Week`:''].filter(Boolean).join(' · ')}</p>
           </div>
           <div class="acts">
             ${st>0 ? `<span class="streak ${st>=3?'hot':''}">${SVG(ICONS.flame,'width="12" height="12" fill="currentColor" stroke="none"')}${st}</span>` : ''}
             <button class="notebtn ${e.note?'on':''}" data-note="${hb.id}" aria-label="Note" data-tip="${e.note?'Edit Note':'Add Note'}">${SVG(ICONS.note)}</button>
           </div>
         </div>
+        ${isWater?`<button class="wfill" data-water="${hb.id}" aria-label="Log a drink">
+          <span class="track"><i style="width:${Math.round(Math.min(1,pct)*100)}%"></i></span>
+          <span class="add">${SVG('<path d="M12 5v14M5 12h14"/>')}Add</span>
+        </button>`:''}
         ${showNote?`<textarea class="note" placeholder="Anything worth remembering?" data-notetxt="${hb.id}|${t}">${esc(e.note||'')}</textarea>`:''}
         <div class="strip">
           ${strip.map(d=>{
@@ -686,12 +797,57 @@ function renderStats(){
 }
 
 /* ============================== sheet ============================== */
-let sheetMode = null, sheetDate = null;
+let sheetMode = null, sheetDate = null, sheetHabit = null, waterPick = 'water', waterPrev = 0;
 const scrim = document.getElementById('scrim'), sheet = document.getElementById('sheet');
 function openSheet(){ scrim.classList.add('on'); sheet.classList.add('on'); }
 function closeSheet(){ scrim.classList.remove('on'); sheet.classList.remove('on'); sheetMode = null; render(); }
+function paintCup(pct){
+  const el = document.querySelector('#cupBig [data-fill]');
+  if(!el) return;
+  const y = Math.round((1 - Math.max(0, Math.min(1, pct))) * 180);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{ el.style.transform = `translateY(${y}px)`; }));
+}
+function renderWaterSheet(){
+  const hb = habitById(sheetHabit); if(!hb) return '';
+  const t = TODAY(), list = drinksOf(t, hb.id), drank = drankTotal(t, hb.id);
+  const goal = hb.goal || 0, unit = hb.unit || 'oz';
+  const pct = goal ? drank/goal : 0, left = Math.max(0, goal - drank);
+  const byType = DRINKS.map(d=>({...d, a:list.filter(x=>x.k===d.k).reduce((a,x)=>a+(Number(x.a)||0),0)})).filter(d=>d.a>0);
+  return `<div class="card wtop" style="${cvar(hb)}">
+      <div class="cupbig" id="cupBig">${cup(waterPrev,'cupBig_',hb)}${pct>0.08?[0,1,2].map(i=>`<span class="bub" style="width:${5+i}px;height:${5+i}px;left:${38+i*17}%;bottom:16%;animation:bub ${2.6+i*0.7}s ease-in ${i*0.9}s infinite"></span>`).join(''):''}</div>
+      <div class="wbig num">${nice(drank)}<span> / ${nice(goal)} ${esc(unit)}</span></div>
+      <div class="wsub">${drank>=goal&&goal ? '<b>Goal Hit — Nice One 🎉</b>' : `${nice(left)} ${esc(unit)} To Go · ${Math.round(pct*100)}%`}</div>
+      ${byType.length?`<div class="wbreak">${byType.map(d=>`<span class="wtag">${d.emoji} ${nice(d.a)}</span>`).join('')}</div>`:''}
+    </div>
+    <div class="sec-title">Add A Drink</div>
+    <div class="card" style="padding:14px">
+      <div class="dchips">${DRINKS.map(d=>`<button class="dchip ${waterPick===d.k?'on':''}" data-dpick="${d.k}"><span class="e">${d.emoji}</span><small>${d.name}</small></button>`).join('')}</div>
+      <div class="amts">${QUICK(unit).map(a=>`<button class="abtn num" data-dadd="${a}">+${a}</button>`).join('')}</div>
+      <div class="acustom">
+        <input type="number" inputmode="decimal" step="any" id="wAmt" placeholder="Other amount in ${esc(unit)}">
+        <button class="btn btn-ghost" id="wAdd">Add</button>
+      </div>
+    </div>
+    <div class="sec-title">Today's Drinks</div>
+    <div class="card" style="padding:${list.length?'6px 14px':'0'}">
+      ${list.length ? `<div class="dlog">${list.map((d,i)=>{
+        const info = drinkBy(d.k);
+        return `<div class="dlog-row"><span class="e">${info.emoji}</span><span class="nm">${info.name}</span>
+          <span class="amt-v num">${nice(d.a)} ${esc(unit)}</span><time>${esc(d.t||'')}</time>
+          <button class="xbtn" data-ddel="${i}" aria-label="Remove">${SVG('<path d="M18 6 6 18M6 6l12 12"/>','width="14" height="14"')}</button></div>`;
+      }).join('')}</div>` : `<div class="empty">Nothing logged yet today.</div>`}
+    </div>`;
+}
 function renderSheet(){
   const title = document.getElementById('sheetTitle'), body = document.getElementById('sheetBody');
+  if(sheetMode === 'water'){
+    const hb = habitById(sheetHabit);
+    title.textContent = hb ? hb.name : 'Water';
+    body.innerHTML = renderWaterSheet();
+    const t = TODAY(), pctNow = hb && hb.goal ? drankTotal(t,hb.id)/hb.goal : 0;
+    paintCup(pctNow); waterPrev = pctNow;
+    return;
+  }
   if(sheetMode === 'day'){
     const d = parseISO(sheetDate);
     title.textContent = fmtDate(d,{weekday:'long', month:'long', day:'numeric'});
@@ -821,6 +977,26 @@ document.addEventListener('click', e=>{
     render(); return;
   }
   if((el = q('[data-day]'))){ sheetMode='day'; sheetDate = el.dataset.day; renderSheet(); openSheet(); return; }
+  if((el = q('[data-water]'))){ sheetMode='water'; sheetHabit = el.dataset.water; waterPrev = 0; renderSheet(); openSheet(); return; }
+
+  /* ---- water sheet ---- */
+  if((el = q('[data-dpick]'))){ waterPick = el.dataset.dpick; renderSheet(); return; }
+  if((el = q('[data-dadd]'))){
+    logDrink(TODAY(), sheetHabit, waterPick, el.dataset.dadd);
+    renderSheet(); const c = document.getElementById('cupBig');
+    if(c){ c.classList.remove('splash'); void c.offsetWidth; c.classList.add('splash'); }
+    if(navigator.vibrate) try{ navigator.vibrate(8); }catch(_){}
+    return;
+  }
+  if(q('#wAdd')){
+    const inp = document.getElementById('wAmt'), v = Number(inp.value);
+    if(!v || v<=0){ inp.focus(); return; }
+    logDrink(TODAY(), sheetHabit, waterPick, v);
+    renderSheet(); const c = document.getElementById('cupBig');
+    if(c){ c.classList.remove('splash'); void c.offsetWidth; c.classList.add('splash'); }
+    return;
+  }
+  if((el = q('[data-ddel]'))){ removeDrink(TODAY(), sheetHabit, Number(el.dataset.ddel)); renderSheet(); return; }
 
   if(q('#btnEdit')){ sheetMode='edit'; renderSheet(); openSheet(); return; }
   if(q('#sheetClose') || e.target === scrim){ closeSheet(); return; }
