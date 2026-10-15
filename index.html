@@ -113,6 +113,42 @@ input,select,textarea{font-family:inherit;font-size:15px;color:inherit}
 .note{margin-top:11px;width:100%;border:1px solid var(--line-soft);background:#FCFBF9;border-radius:10px;padding:8px 10px;font-size:13.5px;resize:none;outline:none;min-height:34px;transition:border-color .15s}
 .note:focus{border-color:var(--line);background:#fff}
 
+/* ---------- time-of-day sections ---------- */
+.slot-h{display:flex;align-items:center;gap:8px}
+.slot-h .st{font-weight:600;letter-spacing:.02em;text-transform:none;color:var(--faint)}
+.slot-h .nowtag{font-size:10px;font-weight:800;letter-spacing:.06em;padding:2px 7px;border-radius:999px;background:var(--ink);color:#fff}
+.slot-h .cnt{margin-left:auto;letter-spacing:.02em}
+.slot-h .cnt.hit{color:var(--c3)}
+.slotcard{padding:2px 8px}
+.slotcard.isnow{border-color:#CFCAC2;box-shadow:0 1px 2px rgba(20,22,28,.04),0 14px 30px -18px rgba(20,22,28,.3)}
+.slotcard.alldone{background:linear-gradient(180deg,color-mix(in srgb,var(--c3) 6%,#fff),#fff)}
+.trow{display:flex;align-items:center;gap:12px;width:100%;padding:11px 6px;text-align:left;border-bottom:1px solid var(--line-soft);position:relative}
+.trow:last-child{border-bottom:0}
+.trow:active .mini{transform:scale(.9)}
+.trow .mini.pop{animation:pop .34s cubic-bezier(.34,1.6,.64,1)}
+.tname{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.tname b{font-size:15px;font-weight:700;letter-spacing:-.01em}
+.trow.on .tname b{color:var(--muted);text-decoration:line-through;text-decoration-color:color-mix(in srgb,var(--c) 60%,transparent);text-decoration-thickness:2px}
+.tmeta{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:var(--faint)}
+.sdots{display:inline-flex;gap:4px}
+.sdots i{width:8px;height:8px;border-radius:50%;background:var(--line);display:block}
+.sdots i.on{background:var(--c)}
+.sdots i.here{box-shadow:0 0 0 1.5px #fff,0 0 0 3px color-mix(in srgb,var(--c) 50%,transparent)}
+.tstate{font-size:12.5px;font-weight:700;color:var(--faint);flex:none}
+.trow.on .tstate{color:var(--c)}
+.tchips{display:flex;gap:7px;flex-wrap:wrap;margin-top:6px}
+.tchip{padding:7px 12px;border-radius:999px;border:1.5px solid var(--line);background:#fff;font-size:13px;font-weight:600;color:var(--muted);transition:all .14s}
+.tchip.on{border-color:var(--ink);background:var(--sunk);color:var(--ink)}
+.cell.part{background:color-mix(in srgb,var(--c) 30%,var(--line-soft));font-size:10.5px;font-weight:800;color:color-mix(in srgb,var(--c) 75%,#000)}
+.pip.part{background:color-mix(in srgb,var(--c) 38%,var(--line-soft))}
+.rrow{display:flex;align-items:center;gap:12px;padding:12px 2px;border-bottom:1px solid var(--line-soft)}
+.rrow:last-child{border-bottom:0}
+.rrow .e{font-size:22px;line-height:1;flex:none}
+.rrow .nm{flex:1;min-width:0}
+.rrow .nm b{display:block;font-size:14.5px;font-weight:700}
+.rrow .nm small{display:block;font-size:12px;color:var(--muted);font-weight:500;margin-top:1px}
+.rrow input{width:118px;flex:none;text-align:center;font-weight:700}
+
 /* ---------- water cup ---------- */
 .cupsvg{display:block;width:100%;height:100%;overflow:visible}
 .lq{transition:transform .9s cubic-bezier(.32,.72,0,1)}
@@ -301,6 +337,9 @@ input,select,textarea{font-family:inherit;font-size:15px;color:inherit}
     <div class="brand">Habits <small id="todayLbl"></small></div>
     <div class="spacer"></div>
     <div class="sync" id="syncPill"><span class="dot off"></span><span id="syncTxt">Local</span></div>
+    <button class="iconbtn" id="btnRemind" title="Reminders" aria-label="Reminders">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+    </button>
     <button class="iconbtn" id="btnEdit" title="Edit habits" aria-label="Edit habits">
       <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
     </button>
@@ -338,14 +377,30 @@ const ICONS = {
   note:'<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/>',
   flame:'<path d="M12 22c4 0 7-2.8 7-6.5 0-4.5-4-6.5-4-10.5-3 1.5-4 4-4 6-1.5-1-2-2.5-2-4C6.5 9 5 11.5 5 15.5 5 19.2 8 22 12 22z"/>'
 };
+const SLOTS = [
+  {k:'morning',   name:'Morning',   emoji:'\u{2600}\u{FE0F}', from:0},
+  {k:'afternoon', name:'Afternoon', emoji:'\u{1F324}\u{FE0F}', from:12},
+  {k:'night',     name:'Night',     emoji:'\u{1F319}',       from:17},
+];
+const SLOT_TIMES = {morning:'07:30', afternoon:'13:00', night:'22:00'};
+const CFG_VER = 2;
+const BRUSH = {id:'teeth', name:'Brush Teeth', emoji:'\u{1FAA5}', color:'c3', unit:'', goal:null, weekly:7, times:['morning','afternoon','night']};
+const FACE  = {id:'face',  name:'Wash Face',   emoji:'\u{1F9FC}', color:'c7', unit:'', goal:null, weekly:7, times:['morning','night']};
 const DEFAULTS = [
+  BRUSH, FACE,
   {id:'running',  name:'Running',           emoji:'\u{1F3C3}',       color:'c5', unit:'',    goal:null, weekly:3},
   {id:'reading',  name:'Reading',           emoji:'\u{1F4D6}',       color:'c2', unit:'min', goal:20,   weekly:7},
-  {id:'writing',  name:'Writing Book',      emoji:'\u{270D}\u{FE0F}', color:'c3', unit:'min', goal:60, weekly:5, start:'2026-09-01'},
   {id:'language', name:'Language Learning', emoji:'\u{1F5E3}\u{FE0F}', color:'c4', unit:'min', goal:20, weekly:7},
   {id:'water',    name:'Drink Water',        emoji:'\u{1F4A7}',       color:'c1', unit:'oz',  goal:80, weekly:7, kind:'water'},
 ];
-const EMOJI_SET = ['\u{1F3C3}','\u{1F4D6}','\u{270D}\u{FE0F}','\u{1F5E3}\u{FE0F}','\u{1F4AA}','\u{1F9D8}','\u{1F6B4}','\u{1F3CA}','\u{1F957}','\u{1F4A7}','\u{1F634}','\u{1F9F9}','\u{1F3B8}','\u{1F3A8}','\u{1F9E0}','\u{1F48A}','\u{2600}\u{FE0F}','\u{1F319}','\u{1F4D3}','\u{1F34E}','\u{1F4B0}','\u{1F4F5}','\u{1F64F}','\u{2B50}'];
+// v2: Writing Book retired, Brush Teeth + Wash Face added as time-of-day habits.
+function migrate(list){
+  let out = list.filter(h=>h.id!=='writing' && !/writing book/i.test(h.name||''));
+  if(!out.some(h=>h.id==='face'))  out.unshift({...FACE});
+  if(!out.some(h=>h.id==='teeth')) out.unshift({...BRUSH});
+  return out;
+}
+const EMOJI_SET = ['\u{1FAA5}','\u{1F9FC}','\u{1F3C3}','\u{1F4D6}','\u{270D}\u{FE0F}','\u{1F5E3}\u{FE0F}','\u{1F4AA}','\u{1F9D8}','\u{1F6B4}','\u{1F3CA}','\u{1F957}','\u{1F4A7}','\u{1F634}','\u{1F9F9}','\u{1F3B8}','\u{1F3A8}','\u{1F9E0}','\u{1F48A}','\u{2600}\u{FE0F}','\u{1F319}','\u{1F4D3}','\u{1F34E}','\u{1F4B0}','\u{1F4F5}','\u{1F64F}','\u{2B50}'];
 const emo = h => h.emoji || '\u{2B50}';
 const DRINKS = [
   {k:'water',    emoji:'\u{1F4A7}', name:'Water'},
@@ -375,7 +430,7 @@ const daysBetween = (a,b) => Math.round((parseISO(b)-parseISO(a))/86400000);
 
 /* ============================== state ============================== */
 const LS = 'habits-v1';
-let S = { habits: DEFAULTS.map(h=>({...h})), days: {}, cfgUpdated: 0 };
+let S = { habits: DEFAULTS.map(h=>({...h})), days: {}, cfgUpdated: 0, cfgVer: CFG_VER, slotTimes: {...SLOT_TIMES} };
 let view = 'today';
 let weekAnchor = startOfWeek(new Date());
 let monthAnchor = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
@@ -388,6 +443,10 @@ function loadLocal(){
     if(Array.isArray(d.habits) && d.habits.length) S.habits = d.habits;
     if(d.days && typeof d.days === 'object') S.days = d.days;
     S.cfgUpdated = d.cfgUpdated || 0;
+    S.slotTimes = {...SLOT_TIMES, ...(d.slotTimes||{})};
+    if((d.cfgVer||1) < CFG_VER){ S.habits = migrate(S.habits); S.cfgUpdated = Date.now(); }
+    S.cfgVer = CFG_VER;
+    saveLocal();
   }catch(e){ console.warn('load failed', e); }
 }
 function saveLocal(){ try{ localStorage.setItem(LS, JSON.stringify(S)); }catch(e){} }
@@ -395,7 +454,18 @@ function saveLocal(){ try{ localStorage.setItem(LS, JSON.stringify(S)); }catch(e
 const habitById = id => S.habits.find(h=>h.id===id);
 const entry = (date,id) => (S.days[date]||{})[id] || null;
 const isDone = (date,id) => !!(entry(date,id)||{}).done;
-const anyDone = date => { const d = S.days[date]; return !!d && S.habits.some(h=>d[h.id] && d[h.id].done); };
+const anyDone = date => { const d = S.days[date]; return !!d && S.habits.some(h=>d[h.id] && (d[h.id].done || Object.keys(d[h.id].slots||{}).length)); };
+const slotsOf = hb => (hb.times && hb.times.length) ? SLOTS.map(s=>s.k).filter(k=>hb.times.includes(k)) : null;
+const slotDone = (date,id,k) => !!(((entry(date,id)||{}).slots)||{})[k];
+const slotCount = (date,hb) => { const sl = slotsOf(hb); return sl ? sl.filter(k=>slotDone(date,hb.id,k)).length : 0; };
+const taskCount = hb => (slotsOf(hb)||[0]).length;
+const tasksDone = (date,hb) => slotsOf(hb) ? slotCount(date,hb) : (isDone(date,hb.id)?1:0);
+const slotInfo = k => SLOTS.find(s=>s.k===k);
+function currentSlot(){ const hr = new Date().getHours(); return [...SLOTS].reverse().find(s=>hr>=s.from).k; }
+function fmtTime(hm){
+  const [H,M] = (hm||'00:00').split(':').map(Number);
+  return `${(H%12)||12}${M?':'+pad(M):''} ${H<12?'AM':'PM'}`;
+}
 const active = (hb,date) => !hb.start || date >= hb.start;
 const activeOn = date => S.habits.filter(h=>active(h,date));
 const allDone = date => { const list = activeOn(date); return list.length>0 && list.every(h=>isDone(date,h.id)); };
@@ -407,11 +477,24 @@ function setEntry(date, id, patch){
   S.days[date][id] = {...cur, ...patch};
   const e = S.days[date][id];
   if(e.drinks === null) delete e.drinks;
-  if(!e.done && !e.note && !(e.drinks||[]).length) delete S.days[date][id];
+  if(e.slots && !Object.keys(e.slots).length) delete e.slots;
+  if(!e.done && !e.note && !(e.drinks||[]).length && !e.slots) delete S.days[date][id];
   if(!Object.keys(S.days[date]).length) delete S.days[date];
   saveLocal(); pushDay(date);
 }
-function toggle(date, id){ setEntry(date, id, {done: !isDone(date,id)}); }
+// Habits with times of day are "done" for the day once every slot is ticked.
+function toggle(date, id){
+  const hb = habitById(id), sl = hb && slotsOf(hb);
+  if(!sl) return setEntry(date, id, {done: !isDone(date,id)});
+  const all = !isDone(date,id);
+  setEntry(date, id, {done: all, slots: all ? Object.fromEntries(sl.map(k=>[k,true])) : {}});
+}
+function toggleSlot(date, id, k){
+  const hb = habitById(id), sl = slotsOf(hb) || [];
+  const slots = {...((entry(date,id)||{}).slots||{})};
+  if(slots[k]) delete slots[k]; else slots[k] = true;
+  setEntry(date, id, {slots, done: sl.length>0 && sl.every(x=>slots[x])});
+}
 
 /* ============================== cloud sync ============================== */
 const FB = {
@@ -446,9 +529,13 @@ async function initCloud(){
     store.onSnapshot(store.doc(db,'habit_config','main'), snap=>{
       const d = snap.data();
       if(!d || !Array.isArray(d.habits) || !d.habits.length) { if(!snap.metadata.hasPendingWrites && snap.exists()===false) pushConfig(); return; }
+      const old = (d.ver||1) < CFG_VER;
       if((d.updatedAt||0) > (S.cfgUpdated||0)){
-        S.habits = d.habits; S.cfgUpdated = d.updatedAt||0; saveLocal(); softRender();
+        S.habits = old ? migrate(d.habits) : d.habits;
+        S.slotTimes = {...SLOT_TIMES, ...(d.slotTimes||{})};
+        S.cfgUpdated = d.updatedAt||0; saveLocal(); softRender();
       }
+      if(old && !snap.metadata.hasPendingWrites) pushConfig();
     }, err=>syncState('err','Offline'));
 
     store.onSnapshot(store.collection(db,'habit_days'), snap=>{
@@ -478,7 +565,7 @@ function pushDay(date){
 function pushConfig(){
   if(!syncOn) return;
   S.cfgUpdated = Date.now(); saveLocal();
-  FS.setDoc(FS.doc(db,'habit_config','main'), {habits: S.habits, updatedAt: S.cfgUpdated}).catch(()=>{});
+  FS.setDoc(FS.doc(db,'habit_config','main'), {habits: S.habits, slotTimes: S.slotTimes, ver: CFG_VER, updatedAt: S.cfgUpdated}).catch(()=>{});
 }
 addEventListener('online',  ()=>syncState(syncOn?'on':'off', syncOn?'Synced':'Local Only'));
 addEventListener('offline', ()=>syncState('off','Offline'));
@@ -558,8 +645,8 @@ const cvar = h => `--c:var(--${h.color})`;
 function renderToday(){
   const t = TODAY();
   const live = activeOn(t), soon = S.habits.filter(h=>!active(h,t));
-  const total = live.length;
-  const done = live.filter(h=>isDone(t,h.id)).length;
+  const total = live.reduce((a,hb)=>a+taskCount(hb),0);
+  const done = live.reduce((a,hb)=>a+tasksDone(t,hb),0);
   const dStreak = streak(anyDone);
   const wk = startOfWeek(new Date());
 
@@ -573,9 +660,31 @@ function renderToday(){
 
   if(!S.habits.length) return h + `<div class="card empty">No habits yet. Tap the gear up top to add one.</div>`;
 
-  h += `<div class="sec-title">Today</div>`;
+  // Routine: one section per time of day, each slot is its own tick.
+  const now = currentSlot(), nowIdx = SLOTS.findIndex(s=>s.k===now);
+  SLOTS.forEach((s,si)=>{
+    const items = live.filter(hb=>(slotsOf(hb)||[]).includes(s.k));
+    if(!items.length) return;
+    const n = items.filter(hb=>slotDone(t,hb.id,s.k)).length;
+    const isNow = s.k===now, past = si < nowIdx;
+    h += `<div class="sec-title slot-h"><span>${s.emoji} ${s.name}</span><span class="st">${fmtTime(S.slotTimes[s.k])}</span>${isNow?'<span class="nowtag">NOW</span>':''}<span class="cnt num ${n===items.length?'hit':''}">${n}/${items.length}</span></div>
+    <div class="card slotcard ${isNow?'isnow':''} ${n===items.length?'alldone':''}">${items.map(hb=>{
+      const on = slotDone(t,hb.id,s.k), sl = slotsOf(hb);
+      const st = streak(d=>isDone(d,hb.id));
+      return `<button class="trow ${on?'on':''}" style="${cvar(hb)}" data-slot="${hb.id}|${t}|${s.k}">
+        <span class="mini ${on?'on':''}"><span class="em">${emo(hb)}</span>${on?`<span class="badge">${SVG(ICONS.check)}</span>`:''}</span>
+        <span class="tname"><b>${esc(hb.name)}</b>
+          <span class="tmeta">${sl.length>1?`<span class="sdots">${sl.map(k=>`<i class="${slotDone(t,hb.id,k)?'on':''} ${k===s.k?'here':''}"></i>`).join('')}</span><span class="num">${slotCount(t,hb)} of ${sl.length} Today</span>`:'Once a Day'}${st>0?` · ${SVG(ICONS.flame,'width="11" height="11" fill="currentColor" stroke="none" style="vertical-align:-1px"')} <span class="num">${st}</span>`:''}</span>
+        </span>
+        <span class="tstate">${on?'Done':past?'Missed?':''}</span>
+      </button>`;
+    }).join('')}</div>`;
+  });
+
+  const anytime = live.filter(hb=>!slotsOf(hb));
+  if(anytime.length) h += `<div class="sec-title">Anytime</div>`;
   const strip = lastNDays(7);
-  live.forEach(hb=>{
+  anytime.forEach(hb=>{
     const e = entry(t,hb.id) || {};
     const on = !!e.done;
     const isWater = hb.kind === 'water';
@@ -622,7 +731,7 @@ function renderToday(){
       <div class="check pend"><span class="em">${emo(hb)}</span></div>
       <div class="hbody"><div class="hrow"><div style="min-width:0">
         <p class="hname">${esc(hb.name)}</p>
-        <p class="hsub">${startTxt(hb)} · ${hb.weekly}× a Week${hb.goal?`, ${nice(hb.goal)} ${esc(hb.unit||'')}`:''}</p>
+        <p class="hsub">${startTxt(hb)} · ${slotsOf(hb)?slotsOf(hb).map(k=>slotInfo(k).name).join(', '):`${hb.weekly}× a Week`}${hb.goal?`, ${nice(hb.goal)} ${esc(hb.unit||'')}`:''}</p>
       </div></div></div>
     </div>`;
   });
@@ -665,7 +774,8 @@ function renderWeek(){
         ${liveHere?`<div class="wbar"><i style="width:${Math.min(100,(n/tgt)*100)}%"></i></div>`:'<div style="height:9px"></div>'}
         <div class="wcells">${dates.map(d=>{
           const dn = isDone(d,hb.id), fut = d>t, pre = !active(hb,d);
-          return `<button class="cell ${dn?'on':''} ${d===t&&!pre?'now':''} ${fut&&!pre?'fut':''} ${pre?'pre':''}" style="${cvar(hb)}" ${(fut||pre)?'disabled':''} data-toggle="${hb.id}|${d}" data-tip="${esc(hb.name)} · ${fmtDate(parseISO(d),{weekday:'short',month:'short',day:'numeric'})}${pre?' · not started yet':dn?' · done':''}">${dn?SVG(ICONS.check):''}</button>`;
+          const sl = slotsOf(hb), k = slotCount(d,hb), part = !dn && k>0;
+          return `<button class="cell ${dn?'on':''} ${part?'part':''} ${d===t&&!pre?'now':''} ${fut&&!pre?'fut':''} ${pre?'pre':''}" style="${cvar(hb)}" ${(fut||pre)?'disabled':''} data-toggle="${hb.id}|${d}" data-tip="${esc(hb.name)} · ${fmtDate(parseISO(d),{weekday:'short',month:'short',day:'numeric'})}${pre?' · not started yet':dn?' · done':part?` · ${k} of ${sl.length}`:''}">${dn?SVG(ICONS.check):part?`<span class="num">${k}/${sl.length}</span>`:''}</button>`;
         }).join('')}</div>
       </div>`;
     }).join('')}`;
@@ -702,7 +812,7 @@ function renderMonth(){
     ${Array.from({length:lead},()=>`<div class="mday pad"></div>`).join('')}
     ${dates.map(d=>{
       const fut = d>t;
-      const pips = S.habits.map(hb=>`<div class="pip ${isDone(d,hb.id)?'on':''} ${active(hb,d)?'':'na'}" style="${cvar(hb)}"></div>`).join('');
+      const pips = S.habits.map(hb=>`<div class="pip ${isDone(d,hb.id)?'on':slotCount(d,hb)?'part':''} ${active(hb,d)?'':'na'}" style="${cvar(hb)}"></div>`).join('');
       const n = S.habits.filter(hb=>isDone(d,hb.id)).length;
       return `<button class="mday ${d===t?'now':''} ${fut?'fut':''}" data-day="${d}" data-tip="${fmtDate(parseISO(d),{weekday:'short',month:'short',day:'numeric'})} · ${n}/${activeOn(d).length}">
         <span class="d num">${parseISO(d).getDate()}</span>
@@ -855,6 +965,14 @@ function renderSheet(){
       ${S.habits.map(hb=>{
         const e = entry(sheetDate,hb.id)||{};
         const on = active(hb,sheetDate);
+        if(slotsOf(hb)) return slotsOf(hb).map(k=>{
+          const dn = slotDone(sheetDate,hb.id,k);
+          return `<button class="dayedit ${on?'':'pending'}" style="${cvar(hb)}" data-dslot="${hb.id}|${k}">
+            <span class="mini ${dn?'on':''} ${on?'':'pend'}"><span class="em">${emo(hb)}</span>${dn?`<span class="badge">${SVG(ICONS.check)}</span>`:''}</span>
+            <span class="nm">${esc(hb.name)} <span style="color:var(--faint);font-weight:500">· ${slotInfo(k).name}</span></span>
+            <span class="dstate">${!on ? fmtDate(parseISO(hb.start),{month:'short',day:'numeric'}) : dn?'Done':'Not Yet'}</span>
+          </button>`;
+        }).join('');
         return `<button class="dayedit ${on?'':'pending'}" style="${cvar(hb)}" data-dtoggle="${hb.id}">
           <span class="mini ${e.done?'on':''} ${on?'':'pend'}"><span class="em">${emo(hb)}</span>${e.done?`<span class="badge">${SVG(ICONS.check)}</span>`:''}</span>
           <span class="nm">${esc(hb.name)}</span>
@@ -863,6 +981,25 @@ function renderSheet(){
       }).join('')}
     </div>
     <div class="row-b"><button class="btn btn-ghost btn-full" id="clearDay">Clear This Day</button></div>`;
+    return;
+  }
+  if(sheetMode === 'remind'){
+    title.textContent = 'Reminders';
+    const canNotify = 'Notification' in window && !/iPhone|iPad/.test(navigator.userAgent);
+    body.innerHTML = `<div class="card" style="padding:4px 14px">
+      ${SLOTS.map(s=>{
+        const names = S.habits.filter(hb=>(slotsOf(hb)||[]).includes(s.k)).map(hb=>hb.name);
+        return `<div class="rrow"><span class="e">${s.emoji}</span>
+          <div class="nm"><b>${s.name}</b><small>${names.length?esc(names.join(', ')):'Nothing scheduled'}</small></div>
+          <input type="time" class="inp num" value="${S.slotTimes[s.k]}" data-stime="${s.k}"></div>`;
+      }).join('')}
+    </div>
+    <button class="btn btn-dark btn-full" id="icsBtn" style="margin-top:12px">📅 Add Reminders To My Calendar</button>
+    <p class="hint" style="margin:10px 2px 0">This adds one repeating event per time of day to your iPhone Calendar, each with an alert at that time — e.g. <b>☀️ Morning: Brush Teeth, Wash Face</b>. The alert's link opens Habits.</p>
+    <p class="hint" style="margin:6px 2px 0">Tap <b>Add All</b> when your phone asks. If nothing happens from the home-screen app, open the site in Safari and tap it there. If you change the times later, delete the old Habits events and add them again.</p>
+    ${canNotify?`<div class="sec-title">On This Computer</div>
+    <div class="card" style="padding:15px"><p class="hint" style="margin:0">While Habits is open in a browser tab, it can also pop up an alert at each time.</p>
+      <div class="row-b"><button class="btn btn-ghost btn-full" id="notifBtn" ${Notification.permission==='granted'?'disabled':''}>${Notification.permission==='granted'?'Desktop Alerts Are On ✓':'Turn On Desktop Alerts'}</button></div></div>`:''}`;
     return;
   }
   title.textContent = 'Habits & Settings';
@@ -882,6 +1019,9 @@ function renderSheet(){
       <div style="margin-top:10px"><label class="lbl">Starts on</label>
         <input type="date" class="inp" value="${hb.start||''}" data-hf="${hb.id}|start"></div>
       <p class="hint" style="margin:8px 0 0;font-size:12px">The daily target is just a reminder on the card. A start date hides the habit from today's count until then — leave it blank to start now.</p>
+      <label class="lbl" style="margin-top:12px">Times Of Day</label>
+      <div class="tchips">${SLOTS.map(s=>`<button class="tchip ${(hb.times||[]).includes(s.k)?'on':''}" data-htime="${hb.id}|${s.k}">${s.emoji} ${s.name}</button>`).join('')}</div>
+      <p class="hint" style="margin:6px 0 0;font-size:12px">Pick each time you do it — it gets its own check-off in that part of the day. Pick none for an anytime habit.</p>
       <label class="lbl" style="margin-top:12px">Color</label>
       <div class="swatches">${PAL.map(c=>`<button class="sw ${hb.color===c?'on':''}" style="background:${PAL_HEX[c]}" data-hcol="${hb.id}|${c}" aria-label="${c}"></button>`).join('')}</div>
       <label class="lbl" style="margin-top:12px">Emoji</label>
@@ -960,6 +1100,14 @@ document.addEventListener('click', e=>{
     if(date > TODAY() || (hb0 && !active(hb0,date))) return;
     toggle(date,id); render(); pop(el.dataset.toggle); return;
   }
+  if((el = q('[data-slot]'))){
+    const [id,date,k] = el.dataset.slot.split('|');
+    toggleSlot(date,id,k); render();
+    const m = document.querySelector(`[data-slot="${el.dataset.slot}"] .mini.on`);
+    if(m) m.classList.add('pop');
+    if(navigator.vibrate) try{ navigator.vibrate(8); }catch(_){}
+    return;
+  }
   if((el = q('[data-note]'))){
     const id = el.dataset.note;
     openNotes.has(id) ? openNotes.delete(id) : openNotes.add(id);
@@ -999,6 +1147,9 @@ document.addEventListener('click', e=>{
   if((el = q('[data-ddel]'))){ removeDrink(TODAY(), sheetHabit, Number(el.dataset.ddel)); renderSheet(); return; }
 
   if(q('#btnEdit')){ sheetMode='edit'; renderSheet(); openSheet(); return; }
+  if(q('#btnRemind')){ sheetMode='remind'; renderSheet(); openSheet(); return; }
+  if(q('#icsBtn')){ addToCalendar(); return; }
+  if(q('#notifBtn')){ Notification.requestPermission().then(()=>renderSheet()); return; }
   if(q('#sheetClose') || e.target === scrim){ closeSheet(); return; }
 
   /* ---- day sheet ---- */
@@ -1006,6 +1157,11 @@ document.addEventListener('click', e=>{
     const hb0 = habitById(el.dataset.dtoggle);
     if(sheetDate > TODAY() || (hb0 && !active(hb0,sheetDate))) return;
     toggle(sheetDate, el.dataset.dtoggle); renderSheet(); return;
+  }
+  if((el = q('[data-dslot]'))){
+    const [id,k] = el.dataset.dslot.split('|'), hb0 = habitById(id);
+    if(sheetDate > TODAY() || (hb0 && !active(hb0,sheetDate))) return;
+    toggleSlot(sheetDate, id, k); renderSheet(); return;
   }
   if(q('#clearDay')){
     delete S.days[sheetDate]; saveLocal(); pushDay(sheetDate); renderSheet(); toast('Day Cleared'); return;
@@ -1015,6 +1171,13 @@ document.addEventListener('click', e=>{
   if((el = q('[data-hcol]'))){
     const [id,c] = el.dataset.hcol.split('|');
     habitById(id).color = c; pushConfig(); renderSheet(); return;
+  }
+  if((el = q('[data-htime]'))){
+    const [id,k] = el.dataset.htime.split('|'), hb = habitById(id);
+    const set = new Set(hb.times||[]);
+    set.has(k) ? set.delete(k) : set.add(k);
+    if(set.size) hb.times = SLOTS.map(s=>s.k).filter(x=>set.has(x)); else delete hb.times;
+    pushConfig(); renderSheet(); return;
   }
   if((el = q('[data-hemo]'))){
     const [id,k] = el.dataset.hemo.split('|');
@@ -1070,6 +1233,10 @@ document.addEventListener('change', e=>{
     if(field==='start')  { if(t.value) hb.start = t.value; else delete hb.start; }
     pushConfig(); return;
   }
+  if(t.dataset.stime){
+    if(t.value){ S.slotTimes[t.dataset.stime] = t.value; pushConfig(); saveLocal(); }
+    return;
+  }
   if(t.id === 'impFile' && t.files[0]){
     const fr = new FileReader();
     fr.onload = () => {
@@ -1104,9 +1271,54 @@ document.addEventListener('focusout', ()=>{
 document.addEventListener('keydown', e=>{ if(e.key==='Escape' && sheetMode) closeSheet(); });
 addEventListener('scroll', ()=>document.getElementById('topbar').classList.toggle('stuck', scrollY > 4), {passive:true});
 
+/* ============================== reminders ============================== */
+const APP_URL = 'https://olimuc02.github.io/habit-tracker/';
+function slotNames(k){ return S.habits.filter(hb=>(slotsOf(hb)||[]).includes(k)).map(hb=>hb.name); }
+// One repeating daily event per time of day, with an alert at the start.
+function buildICS(){
+  const stamp = new Date().toISOString().replace(/[-:]/g,'').split('.')[0] + 'Z';
+  const day = iso(new Date()).replace(/-/g,'');
+  const icsEsc = s => String(s).replace(/[\\;,]/g, m=>'\\'+m);
+  const L = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Habits//EN','CALSCALE:GREGORIAN','METHOD:PUBLISH','X-WR-CALNAME:Habits'];
+  SLOTS.forEach(s=>{
+    const names = slotNames(s.k); if(!names.length) return;
+    const summary = `${s.emoji} ${s.name}: ${names.join(', ')}`;
+    L.push('BEGIN:VEVENT', `UID:habits-${s.k}@olimuc02.github.io`, `DTSTAMP:${stamp}`,
+      `DTSTART:${day}T${S.slotTimes[s.k].replace(':','')}00`, 'DURATION:PT10M', 'RRULE:FREQ=DAILY',
+      `SUMMARY:${icsEsc(summary)}`, `DESCRIPTION:${icsEsc('Tick it off in Habits: '+APP_URL)}`, `URL:${APP_URL}`,
+      'BEGIN:VALARM','ACTION:DISPLAY',`DESCRIPTION:${icsEsc(summary)}`,'TRIGGER:PT0M','END:VALARM','END:VEVENT');
+  });
+  L.push('END:VCALENDAR');
+  return L.join('\r\n');
+}
+function addToCalendar(){
+  const a = document.createElement('a');
+  a.href = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(buildICS());
+  if(!/iPhone|iPad/.test(navigator.userAgent)) a.download = 'habit-reminders.ics';
+  document.body.appendChild(a); a.click(); a.remove();
+}
+// While the app is open: nudge at each slot time if something there is still unticked.
+function checkReminders(){
+  const now = new Date(), hm = `${pad(now.getHours())}:${pad(now.getMinutes())}`, t = TODAY();
+  SLOTS.forEach(s=>{
+    if(S.slotTimes[s.k] !== hm) return;
+    const key = 'habits-nudge-' + t + '-' + s.k;
+    try{ if(localStorage.getItem(key)) return; localStorage.setItem(key,'1'); }catch(_){}
+    const left = activeOn(t).filter(hb=>(slotsOf(hb)||[]).includes(s.k) && !slotDone(t,hb.id,s.k)).map(hb=>hb.name);
+    if(!left.length) return;
+    const msg = `${s.emoji} ${s.name}: ${left.join(', ')}`;
+    toast(msg);
+    if('Notification' in window && Notification.permission==='granted') try{ new Notification('Habits', {body:msg, icon:'icon-192.png'}); }catch(_){}
+  });
+}
+setInterval(checkReminders, 20000);
+
 /* midnight / return-to-app refresh */
-let lastDay = TODAY();
-function checkDay(){ if(TODAY() !== lastDay){ lastDay = TODAY(); weekAnchor = startOfWeek(new Date()); render(); } }
+let lastDay = TODAY(), lastSlot = currentSlot();
+function checkDay(){
+  if(TODAY() !== lastDay){ lastDay = TODAY(); weekAnchor = startOfWeek(new Date()); render(); return; }
+  if(currentSlot() !== lastSlot){ lastSlot = currentSlot(); if(view==='today') softRender(); }
+}
 setInterval(checkDay, 30000);
 document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) checkDay(); });
 
