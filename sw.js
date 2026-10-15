@@ -1,4 +1,4 @@
-const V = 'habits-v8';
+const V = 'habits-v9';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-180.png', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {

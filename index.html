@@ -167,6 +167,21 @@ input,select,textarea{font-family:inherit;font-size:15px;color:inherit}
 .wfill .add:hover{background:color-mix(in srgb,var(--c) 20%,#fff)}
 .wfill .add svg{width:12px;height:12px;stroke-width:3}
 
+.wcard{display:block}
+.wpanel{display:flex;align-items:center;gap:18px;margin-top:12px}
+.cupcard{width:104px;height:122px;flex:none;position:relative;transition:transform .16s cubic-bezier(.34,1.6,.64,1)}
+.cupcard:active{transform:scale(.95)}
+.cupcard.splash{animation:splash .5s cubic-bezier(.34,1.6,.64,1)}
+.cupcard .badge{right:-4px;bottom:0;width:24px;height:24px}
+.wside{flex:1;min-width:0}
+.wnum{font-size:28px;font-weight:800;letter-spacing:-.035em;line-height:1.05}
+.wnum span{font-size:14px;font-weight:700;color:var(--faint)}
+.wleft{font-size:12.5px;color:var(--muted);font-weight:600;margin-top:2px}
+.wleft b{color:var(--c3)}
+.qadd{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
+.qadd .abtn{padding:9px 2px;border-radius:11px;font-size:13.5px;background:var(--c)}
+.qadd .abtn:hover{background:color-mix(in srgb,var(--c) 85%,#000)}
+.wmore{margin-top:8px;font-size:12px;font-weight:700;color:var(--c);padding:2px 0}
 .cupbig{width:146px;height:170px;margin:0 auto;position:relative}
 .cupbig.splash{animation:splash .5s cubic-bezier(.34,1.6,.64,1)}
 @keyframes splash{0%{transform:scale(1)}35%{transform:scale(1.06) rotate(-1.5deg)}100%{transform:scale(1)}}
@@ -524,7 +539,7 @@ async function initCloud(){
       db = store.initializeFirestore(a, {localCache: store.persistentLocalCache({tabManager: store.persistentMultipleTabManager()})});
     }catch(e){ db = store.getFirestore(a); }
     syncOn = true;
-    syncState('on','Synced');
+    syncState('off','Connecting');
 
     store.onSnapshot(store.doc(db,'habit_config','main'), snap=>{
       const d = snap.data();
@@ -536,7 +551,7 @@ async function initCloud(){
         S.cfgUpdated = d.updatedAt||0; saveLocal(); softRender();
       }
       if(old && !snap.metadata.hasPendingWrites) pushConfig();
-    }, err=>syncState('err','Offline'));
+    }, err=>{ console.warn('config sync', err); syncState('err', err.code==='permission-denied' ? 'Sync Blocked' : 'Offline'); });
 
     store.onSnapshot(store.collection(db,'habit_days'), snap=>{
       let touched = false;
@@ -551,7 +566,7 @@ async function initCloud(){
       });
       if(touched){ saveLocal(); softRender(); }
       syncState(navigator.onLine ? 'on' : 'off', navigator.onLine ? 'Synced' : 'Offline');
-    }, err=>syncState('err','Offline'));
+    }, err=>{ console.warn('day sync', err); syncState('err', err.code==='permission-denied' ? 'Sync Blocked' : 'Offline'); });
   }catch(e){
     console.warn('cloud off', e);
     syncState('off','Local Only');
@@ -627,6 +642,7 @@ function nice(n){
 
 /* ============================== render helpers ============================== */
 const openNotes = new Set();
+const cardCupPrev = {};   // last painted level per water card, so the glass animates up after a re-render
 let pendingRender = false;
 
 function ring(done,total){
@@ -693,6 +709,37 @@ function renderToday(){
     const st = streak(d=>isDone(d,hb.id));
     const wkN = countInWeek(wk,hb.id);
     const showNote = openNotes.has(hb.id) || !!e.note;
+    if(isWater){
+      const goal = hb.goal||0, unit = hb.unit||'oz', left = Math.max(0, goal-drank);
+      const from = cardCupPrev[hb.id] ?? pct;
+      h += `<div class="card hcard wcard ${on?'done':''}" style="${cvar(hb)}">
+        <div class="hrow">
+          <div style="min-width:0"><p class="hname">${emo(hb)} ${esc(hb.name)}</p>
+            <p class="hsub"><b class="num" style="color:${wkN>=hb.weekly?'var(--c3)':'var(--muted)'}">${wkN}/${hb.weekly}</b> This Week</p></div>
+          <div class="acts">
+            ${st>0 ? `<span class="streak ${st>=3?'hot':''}">${SVG(ICONS.flame,'width="12" height="12" fill="currentColor" stroke="none"')}${st}</span>` : ''}
+            <button class="notebtn ${e.note?'on':''}" data-note="${hb.id}" aria-label="Note" data-tip="${e.note?'Edit Note':'Add Note'}">${SVG(ICONS.note)}</button>
+          </div>
+        </div>
+        <div class="wpanel">
+          <button class="cupcard" id="cupCard-${hb.id}" data-water="${hb.id}" data-pct="${pct}" aria-label="Open water log">${cup(from,'cupCardClip-'+hb.id,hb)}${pct>0.08?[0,1].map(i=>`<span class="bub" style="width:${4+i}px;height:${4+i}px;left:${40+i*20}%;bottom:16%;animation:bub ${2.6+i*0.8}s ease-in ${i*1.1}s infinite"></span>`).join(''):''}${on?`<span class="badge">${SVG(ICONS.check)}</span>`:''}</button>
+          <div class="wside">
+            <div class="wnum num">${nice(drank)}<span> / ${nice(goal)} ${esc(unit)}</span></div>
+            <div class="wleft">${on ? '<b>Goal Hit 🎉</b>' : `${nice(left)} ${esc(unit)} To Go`}</div>
+            <div class="qadd">${QUICK(unit).map(a=>`<button class="abtn num" data-qadd="${hb.id}|${a}">+${a}</button>`).join('')}</div>
+            <button class="wmore" data-water="${hb.id}">Coffee, Tea & More · Today's Log ›</button>
+          </div>
+        </div>
+        ${showNote?`<textarea class="note" placeholder="Anything worth remembering?" data-notetxt="${hb.id}|${t}">${esc(e.note||'')}</textarea>`:''}
+        <div class="strip">
+          ${strip.map(d=>{
+            const dn = isDone(d,hb.id), isT = d===t, pre = !active(hb,d);
+            return `<div class="sday"><button class="sbox ${dn?'on':''} ${isT?'today':''} ${pre?'pre':''}" ${pre?'disabled':''} data-toggle="${hb.id}|${d}" aria-label="${d}"></button><small>${DOW1[(parseISO(d).getDay()+6)%7]}</small></div>`;
+          }).join('')}
+        </div>
+      </div>`;
+      return;
+    }
     h += `<div class="card hcard ${on?'done':''}" style="${cvar(hb)}">
       ${isWater
         ? `<button class="cupmini" data-water="${hb.id}" aria-label="Log a drink">${cup(pct,'cupCard',hb)}${on?`<span class="badge">${SVG(ICONS.check)}</span>`:''}</button>`
@@ -1074,6 +1121,11 @@ function render(){
   const el = document.getElementById('view');
   el.innerHTML = view==='today' ? renderToday() : view==='week' ? renderWeek() : view==='month' ? renderMonth() : renderStats();
   bindTips();
+  document.querySelectorAll('.cupcard[data-pct]').forEach(el=>{
+    const id = el.id.replace('cupCard-',''), pct = Number(el.dataset.pct), fill = el.querySelector('[data-fill]');
+    cardCupPrev[id] = pct;
+    if(fill) requestAnimationFrame(()=>requestAnimationFrame(()=>{ fill.style.transform = `translateY(${Math.round((1-Math.max(0,Math.min(1,pct)))*180)}px)`; }));
+  });
   if(sheetMode) renderSheet();
 }
 function softRender(){
@@ -1127,6 +1179,14 @@ document.addEventListener('click', e=>{
   if((el = q('[data-day]'))){ sheetMode='day'; sheetDate = el.dataset.day; renderSheet(); openSheet(); return; }
   if((el = q('[data-water]'))){ sheetMode='water'; sheetHabit = el.dataset.water; waterPrev = 0; renderSheet(); openSheet(); return; }
 
+  if((el = q('[data-qadd]'))){
+    const [id,a] = el.dataset.qadd.split('|');
+    logDrink(TODAY(), id, 'water', a); render();
+    const c = document.getElementById('cupCard-'+id);
+    if(c){ c.classList.remove('splash'); void c.offsetWidth; c.classList.add('splash'); }
+    if(navigator.vibrate) try{ navigator.vibrate(8); }catch(_){}
+    return;
+  }
   /* ---- water sheet ---- */
   if((el = q('[data-dpick]'))){ waterPick = el.dataset.dpick; renderSheet(); return; }
   if((el = q('[data-dadd]'))){
