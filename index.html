@@ -398,7 +398,7 @@ const SLOTS = [
   {k:'night',     name:'Night',     emoji:'\u{1F319}',       from:17},
 ];
 const SLOT_TIMES = {morning:'07:30', afternoon:'13:00', night:'22:00'};
-const CFG_VER = 2;
+const CFG_VER = 3;
 const BRUSH = {id:'teeth', name:'Brush Teeth', emoji:'\u{1FAA5}', color:'c3', unit:'', goal:null, weekly:7, times:['morning','afternoon','night']};
 const FACE  = {id:'face',  name:'Wash Face',   emoji:'\u{1F9FC}', color:'c7', unit:'', goal:null, weekly:7, times:['morning','night']};
 const DEFAULTS = [
@@ -413,6 +413,9 @@ function migrate(list){
   let out = list.filter(h=>h.id!=='writing' && !/writing book/i.test(h.name||''));
   if(!out.some(h=>h.id==='face'))  out.unshift({...FACE});
   if(!out.some(h=>h.id==='teeth')) out.unshift({...BRUSH});
+  // v3: Drink Water lost its glass settings in the cloud copy — put them back.
+  out = out.map(h=>(h.id==='water' || /water/i.test(h.name||'')) && h.kind!=='water'
+    ? {...h, kind:'water', goal:h.goal||80, unit:h.unit||'oz'} : h);
   return out;
 }
 const EMOJI_SET = ['\u{1FAA5}','\u{1F9FC}','\u{1F3C3}','\u{1F4D6}','\u{270D}\u{FE0F}','\u{1F5E3}\u{FE0F}','\u{1F4AA}','\u{1F9D8}','\u{1F6B4}','\u{1F3CA}','\u{1F957}','\u{1F4A7}','\u{1F634}','\u{1F9F9}','\u{1F3B8}','\u{1F3A8}','\u{1F9E0}','\u{1F48A}','\u{2600}\u{FE0F}','\u{1F319}','\u{1F4D3}','\u{1F34E}','\u{1F4B0}','\u{1F4F5}','\u{1F64F}','\u{2B50}'];
