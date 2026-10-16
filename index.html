@@ -1099,7 +1099,10 @@ function renderSheet(){
 
 /* ============================== tooltip ============================== */
 const tip = document.getElementById('tip');
+const canHover = matchMedia('(hover:hover) and (pointer:fine)').matches;
 function bindTips(){
+  tip.classList.remove('on');
+  if(!canHover) return;   // phones: a tap fires "hover" with no way to un-hover, so the label sticks
   document.querySelectorAll('[data-tip]').forEach(el=>{
     el.addEventListener('mouseenter', ()=>{ tip.textContent = el.dataset.tip; tip.classList.add('on'); place(el); });
     el.addEventListener('mousemove', ()=>place(el));
@@ -1144,6 +1147,7 @@ function pop(key){
   if(navigator.vibrate) try{ navigator.vibrate(8); }catch(e){}
 }
 document.addEventListener('click', e=>{
+  tip.classList.remove('on');
   const q = s => e.target.closest(s);
   let el;
 
